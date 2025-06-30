@@ -16,7 +16,7 @@ const TestHistory = ({ onNavigate }) => {
 
   useEffect(() => {
     fetchTests();
-  }, [currentPage, filters]);
+  }, [currentPage, filters]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchTests = async () => {
     try {
@@ -42,7 +42,8 @@ const TestHistory = ({ onNavigate }) => {
       const data = await response.json();
       setTests(data.testRuns || []);
       setTotalPages(data.totalPages || 1);
-    } catch (err) {
+    } catch (error) {
+      console.error('Failed to load test history:', error);
       setError('Failed to load test history');
     } finally {
       setLoading(false);
