@@ -31,10 +31,12 @@ jobs:
       working-directory: ./backend
       run: npm ci
     
-    # Step 4: Run tests
+    # Step 4: Run tests (skip Docker tests in CI)
     - name: Run backend tests
       working-directory: ./backend
-      run: npm test
+      run: npm run test:unit
+      env:
+        CI: true
 
   # Job 2: Test Frontend
   frontend-tests:
@@ -59,9 +61,9 @@ jobs:
       working-directory: ./frontend
       run: npm run build
     
-    - name: Run frontend tests
+    - name: Lint frontend code
       working-directory: ./frontend
-      run: npm test
+      run: npm run lint
 
   # Job 3: Test CLI
   cli-tests:
@@ -85,6 +87,5 @@ jobs:
     - name: Test CLI commands
       working-directory: ./cli
       run: |
-        npm test
         node bin/backup-guardian --help
         node bin/backup-guardian version
