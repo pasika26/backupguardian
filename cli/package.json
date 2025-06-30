@@ -1,0 +1,48 @@
+{
+  "name": "backup-guardian-cli",
+  "version": "1.0.0",
+  "description": "CLI tool for validating database backup files before migration",
+  "main": "src/index.js",
+  "bin": {
+    "backup-guardian": "./bin/backup-guardian"
+  },
+  "scripts": {
+    "test": "jest",
+    "dev": "node bin/backup-guardian",
+    "build": "echo 'No build step needed'",
+    "prepublishOnly": "npm test"
+  },
+  "keywords": [
+    "database",
+    "backup",
+    "validation",
+    "migration",
+    "postgresql",
+    "mysql",
+    "cli"
+  ],
+  "author": "BackupGuardian",
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^12.0.0",
+    "chalk": "^4.1.2",
+    "ora": "^5.4.1",
+    "cli-table3": "^0.6.3",
+    "inquirer": "^8.2.6"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backup-guardian/backup-guardian.git",
+    "directory": "cli"
+  },
+  "bugs": {
+    "url": "https://github.com/backup-guardian/backup-guardian/issues"
+  },
+  "homepage": "https://backup-guardian.com"
+}

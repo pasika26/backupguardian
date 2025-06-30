@@ -1,0 +1,12 @@
+#!/usr/bin/env node
+
+const path = require('path');
+
+// Add the src directory to the Node.js module path
+require('module').globalPaths.push(path.join(__dirname, '..', 'src'));
+
+// Add the backend services to the path so CLI can use them
+require('module').globalPaths.push(path.join(__dirname, '..', '..', 'backend', 'src'));
+
+// Run the CLI
+require('../src/cli.js');

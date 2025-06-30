@@ -1,0 +1,183 @@
+.upload-container {
+  padding: 40px 20px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.upload-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  padding: 40px;
+}
+
+.upload-card h2 {
+  color: #333;
+  margin-bottom: 8px;
+  font-weight: 600;
+  font-size: 24px;
+}
+
+.upload-subtitle {
+  color: #666;
+  margin-bottom: 30px;
+  font-size: 16px;
+}
+
+.upload-area {
+  border: 3px dashed #d1d5db;
+  border-radius: 12px;
+  padding: 60px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: #fafafa;
+}
+
+.upload-area:hover {
+  border-color: #667eea;
+  background: #f8f9ff;
+}
+
+.upload-area.drag-active {
+  border-color: #667eea;
+  background: #f0f4ff;
+  transform: scale(1.02);
+}
+
+.upload-area.uploading {
+  cursor: default;
+  border-color: #667eea;
+  background: #f8f9ff;
+}
+
+.upload-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.upload-icon {
+  font-size: 48px;
+  opacity: 0.7;
+}
+
+.upload-text {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: center;
+}
+
+.upload-text strong {
+  font-size: 18px;
+  color: #333;
+}
+
+.upload-text span {
+  font-size: 14px;
+  color: #666;
+}
+
+.upload-formats {
+  font-size: 12px;
+  color: #888;
+  padding: 8px 16px;
+  background: #f0f0f0;
+  border-radius: 20px;
+}
+
+.upload-progress {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+}
+
+.progress-icon {
+  font-size: 48px;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.progress-text {
+  font-size: 18px;
+  font-weight: 600;
+  color: #667eea;
+}
+
+.progress-bar {
+  width: 100%;
+  max-width: 300px;
+  height: 8px;
+  background: #e5e7eb;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.progress-percent {
+  font-size: 14px;
+  font-weight: 600;
+  color: #667eea;
+}
+
+.message {
+  margin-top: 20px;
+  padding: 16px 20px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 500;
+}
+
+.message.error {
+  background: #fee;
+  color: #c53030;
+  border: 1px solid #feb2b2;
+}
+
+.message.success {
+  background: #f0fff4;
+  color: #22543d;
+  border: 1px solid #9ae6b4;
+}
+
+.message-icon {
+  font-size: 18px;
+}
+
+@media (max-width: 640px) {
+  .upload-container {
+    padding: 20px 10px;
+  }
+  
+  .upload-card {
+    padding: 30px 20px;
+  }
+  
+  .upload-area {
+    padding: 40px 15px;
+  }
+  
+  .upload-icon {
+    font-size: 36px;
+  }
+  
+  .upload-text strong {
+    font-size: 16px;
+  }
+}
