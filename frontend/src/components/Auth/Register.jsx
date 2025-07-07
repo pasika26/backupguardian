@@ -37,7 +37,7 @@ const Register = ({ onToggleAuth, onLogin }) => {
     }
 
     try {
-      const response = await fetch('http://localhost:3000/api/users/register', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL || 'https://backupguardian-production.up.railway.app'}/api/users/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

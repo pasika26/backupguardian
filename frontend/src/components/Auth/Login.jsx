@@ -23,7 +23,7 @@ const Login = ({ onToggleAuth, onLogin }) => {
     setError('');
 
     try {
-      const response = await fetch('http://localhost:3000/api/users/login', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL || 'https://backupguardian-production.up.railway.app'}/api/users/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -49,7 +49,7 @@ const Login = ({ onToggleAuth, onLogin }) => {
   return (
     <div className="auth-container">
       <div className="auth-card">
-        <h2>Sign In to BackupGuardian</h2>
+        <h2>Sign In to Backup Guardian</h2>
         <form onSubmit={handleSubmit} className="auth-form">
           <div className="form-group">
             <label htmlFor="email">Email</label>

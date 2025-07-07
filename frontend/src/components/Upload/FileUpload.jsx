@@ -70,7 +70,7 @@ const FileUpload = ({ onUploadSuccess }) => {
         setUploadProgress(0);
       };
 
-      xhr.open('POST', 'http://localhost:3000/api/backups/upload');
+      xhr.open('POST', `${import.meta.env.VITE_API_URL || 'https://backupguardian-production.up.railway.app'}/api/backups/upload`);
       xhr.setRequestHeader('Authorization', `Bearer ${token}`);
       xhr.send(formData);
 

@@ -31,7 +31,7 @@ const TestHistory = ({ onNavigate }) => {
         ...(filters.dateRange && { dateRange: filters.dateRange })
       });
 
-      const response = await fetch(`http://localhost:3000/api/test-runs?${params}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL || 'https://backupguardian-production.up.railway.app'}/api/test-runs?${params}`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
 
@@ -116,7 +116,7 @@ const TestHistory = ({ onNavigate }) => {
   const handleDownloadReport = async (testId, format) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:3000/api/test-runs/${testId}/report/${format}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL || 'https://backupguardian-production.up.railway.app'}/api/test-runs/${testId}/report/${format}`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       

@@ -23,10 +23,10 @@ const Dashboard = ({ user, onNavigate }) => {
       const token = localStorage.getItem('token');
       
       const [statsResponse, testsResponse] = await Promise.all([
-        fetch('http://localhost:3000/api/test-runs/stats', {
+        fetch(`${import.meta.env.VITE_API_URL || 'https://backupguardian-production.up.railway.app'}/api/test-runs/stats`, {
           headers: { 'Authorization': `Bearer ${token}` }
         }),
-        fetch('http://localhost:3000/api/test-runs?limit=5', {
+        fetch(`${import.meta.env.VITE_API_URL || 'https://backupguardian-production.up.railway.app'}/api/test-runs?limit=5`, {
           headers: { 'Authorization': `Bearer ${token}` }
         })
       ]);
@@ -85,7 +85,7 @@ const Dashboard = ({ user, onNavigate }) => {
   const handleViewDetails = async (test) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:3000/api/test-runs/${test.id}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL || 'https://backupguardian-production.up.railway.app'}/api/test-runs/${test.id}`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       
@@ -109,7 +109,7 @@ const Dashboard = ({ user, onNavigate }) => {
   const handleDownloadReport = async (testId, format) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:3000/api/test-runs/${testId}/report/${format}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL || 'https://backupguardian-production.up.railway.app'}/api/test-runs/${testId}/report/${format}`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       
