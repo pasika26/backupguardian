@@ -11,6 +11,8 @@ const Dashboard = ({ user, onNavigate }) => {
   const [recentTests, setRecentTests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [selectedTest, setSelectedTest] = useState(null);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
 
   useEffect(() => {
     fetchDashboardData();
@@ -67,12 +69,66 @@ const Dashboard = ({ user, onNavigate }) => {
   };
 
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
+    if (!dateString) return 'No date';
+    
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return 'Invalid date';
+    
+    return date.toLocaleDateString('en-US', {
       month: 'short',
       day: 'numeric',
       hour: '2-digit',
       minute: '2-digit'
     });
+  };
+
+  const handleViewDetails = async (test) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`http://localhost:3000/api/test-runs/${test.id}`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        setSelectedTest(data.data);
+        setShowDetailsModal(true);
+      } else {
+        console.error('Failed to fetch test details');
+      }
+    } catch (error) {
+      console.error('Error fetching test details:', error);
+    }
+  };
+
+  const closeDetailsModal = () => {
+    setShowDetailsModal(false);
+    setSelectedTest(null);
+  };
+
+  const handleDownloadReport = async (testId, format) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`http://localhost:3000/api/test-runs/${testId}/report/${format}`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      
+      if (response.ok) {
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `backup-validation-report-${testId}.${format === 'pdf' ? 'html' : 'json'}`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+      } else {
+        console.error('Failed to download report');
+      }
+    } catch (error) {
+      console.error('Error downloading report:', error);
+    }
   };
 
   if (loading) {
@@ -192,14 +248,162 @@ const Dashboard = ({ user, onNavigate }) => {
                   {test.duration ? `${test.duration}s` : '-'}
                 </div>
 
-                <button className="test-details-button">
-                  View Details
-                </button>
+                <div className="test-actions">
+                  <button 
+                    className="test-details-button"
+                    onClick={() => handleViewDetails(test)}
+                  >
+                    View Details
+                  </button>
+                  {test.status === 'passed' || test.status === 'failed' ? (
+                    <div className="download-buttons">
+                      <button 
+                        className="download-button download-json"
+                        onClick={() => handleDownloadReport(test.id, 'json')}
+                        title="Download JSON Report"
+                      >
+                        📄 JSON
+                      </button>
+                      <button 
+                        className="download-button download-pdf"
+                        onClick={() => handleDownloadReport(test.id, 'pdf')}
+                        title="Download PDF Report"
+                      >
+                        📋 PDF
+                      </button>
+                    </div>
+                  ) : null}
+                </div>
               </div>
             ))}
           </div>
         )}
       </div>
+
+      {/* Test Details Modal */}
+      {showDetailsModal && selectedTest && (
+        <div className="modal-overlay" onClick={closeDetailsModal}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>🛡️ Test Details</h2>
+              <button className="modal-close" onClick={closeDetailsModal}>✕</button>
+            </div>
+            
+            <div className="modal-body">
+              <div className="test-details-grid">
+                {/* Basic Info */}
+                <div className="details-section">
+                  <h3>📁 File Information</h3>
+                  <div className="details-row">
+                    <span className="label">Filename:</span>
+                    <span className="value">{selectedTest.filename}</span>
+                  </div>
+                  <div className="details-row">
+                    <span className="label">File Size:</span>
+                    <span className="value">
+                      {selectedTest.fileSize ? (selectedTest.fileSize / 1024 / 1024).toFixed(1) + ' MB' : 'Unknown'}
+                    </span>
+                  </div>
+                  <div className="details-row">
+                    <span className="label">Status:</span>
+                    <span className={`value status-${selectedTest.status}`}>
+                      {getStatusIcon(selectedTest.status)} {selectedTest.status}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Timing Info */}
+                <div className="details-section">
+                  <h3>⏱️ Timing</h3>
+                  <div className="details-row">
+                    <span className="label">Started:</span>
+                    <span className="value">{formatDate(selectedTest.createdAt)}</span>
+                  </div>
+                  <div className="details-row">
+                    <span className="label">Completed:</span>
+                    <span className="value">{formatDate(selectedTest.completedAt)}</span>
+                  </div>
+                  <div className="details-row">
+                    <span className="label">Duration:</span>
+                    <span className="value">{selectedTest.duration ? `${selectedTest.duration}s` : 'N/A'}</span>
+                  </div>
+                </div>
+
+                {/* Database Info */}
+                <div className="details-section">
+                  <h3>🗄️ Database</h3>
+                  <div className="details-row">
+                    <span className="label">Test Database:</span>
+                    <span className="value">{selectedTest.test_database_name || 'N/A'}</span>
+                  </div>
+                  <div className="details-row">
+                    <span className="label">Results Count:</span>
+                    <span className="value">{selectedTest.result_count || 0}</span>
+                  </div>
+                </div>
+
+                {/* Error Info (if failed) */}
+                {selectedTest.status === 'failed' && selectedTest.error_message && (
+                  <div className="details-section error-section">
+                    <h3>❌ Error Details</h3>
+                    <div className="error-message">
+                      {selectedTest.error_message}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Mock validation results for demo */}
+              <div className="validation-results">
+                <h3>📊 Validation Results</h3>
+                <div className="validation-stages">
+                  <div className="stage-item">
+                    <span className="stage-icon">✅</span>
+                    <span className="stage-name">File Structure</span>
+                    <span className="stage-status">Passed</span>
+                  </div>
+                  <div className="stage-item">
+                    <span className="stage-icon">✅</span>
+                    <span className="stage-name">Database Restore</span>
+                    <span className="stage-status">Passed</span>
+                  </div>
+                  <div className="stage-item">
+                    <span className="stage-icon">✅</span>
+                    <span className="stage-name">Schema Validation</span>
+                    <span className="stage-status">Passed</span>
+                  </div>
+                  <div className="stage-item">
+                    <span className="stage-icon">✅</span>
+                    <span className="stage-name">Data Integrity</span>
+                    <span className="stage-status">Passed</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="modal-footer">
+              <button className="btn-secondary" onClick={closeDetailsModal}>Close</button>
+              {(selectedTest.status === 'passed' || selectedTest.status === 'failed') && (
+                <div className="modal-download-buttons">
+                  <button 
+                    className="btn-download btn-json"
+                    onClick={() => handleDownloadReport(selectedTest.id, 'json')}
+                  >
+                    📄 Download JSON
+                  </button>
+                  <button 
+                    className="btn-download btn-pdf"
+                    onClick={() => handleDownloadReport(selectedTest.id, 'pdf')}
+                  >
+                    📋 Download PDF
+                  </button>
+                </div>
+              )}
+              <button className="btn-primary" onClick={() => onNavigate('history')}>View All Tests</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

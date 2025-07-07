@@ -36,12 +36,20 @@ const TestHistory = ({ onNavigate }) => {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to fetch test history');
+        if (response.status === 401) {
+          console.error('Authentication failed - redirecting to login');
+          localStorage.removeItem('token');
+          // Trigger a page reload to redirect to login
+          window.location.reload();
+          return;
+        }
+        throw new Error(`Failed to fetch test history: ${response.status}`);
       }
 
       const data = await response.json();
-      setTests(data.testRuns || []);
-      setTotalPages(data.totalPages || 1);
+      console.log('API Response:', data);
+      setTests(data.data?.testRuns || []);
+      setTotalPages(data.data?.totalPages || 1);
     } catch (error) {
       console.error('Failed to load test history:', error);
       setError('Failed to load test history');
@@ -81,7 +89,12 @@ const TestHistory = ({ onNavigate }) => {
   };
 
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleString('en-US', {
+    if (!dateString) return 'No date';
+    
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return 'Invalid date';
+    
+    return date.toLocaleString('en-US', {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
@@ -98,6 +111,31 @@ const TestHistory = ({ onNavigate }) => {
 
   const showTestDetails = (test) => {
     setSelectedTest(test);
+  };
+
+  const handleDownloadReport = async (testId, format) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`http://localhost:3000/api/test-runs/${testId}/report/${format}`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      
+      if (response.ok) {
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `backup-validation-report-${testId}.${format === 'pdf' ? 'html' : 'json'}`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+      } else {
+        console.error('Failed to download report');
+      }
+    } catch (error) {
+      console.error('Error downloading report:', error);
+    }
   };
 
   const closeTestDetails = () => {
@@ -224,12 +262,32 @@ const TestHistory = ({ onNavigate }) => {
                 <div className="col-date">{formatDate(test.createdAt)}</div>
                 
                 <div className="col-actions">
-                  <button 
-                    className="details-button"
-                    onClick={() => showTestDetails(test)}
-                  >
-                    Details
-                  </button>
+                  <div className="action-buttons">
+                    <button 
+                      className="details-button"
+                      onClick={() => showTestDetails(test)}
+                    >
+                      Details
+                    </button>
+                    {(test.status === 'passed' || test.status === 'failed') && (
+                      <div className="download-buttons">
+                        <button 
+                          className="download-button download-json"
+                          onClick={() => handleDownloadReport(test.id, 'json')}
+                          title="Download JSON Report"
+                        >
+                          📄
+                        </button>
+                        <button 
+                          className="download-button download-pdf"
+                          onClick={() => handleDownloadReport(test.id, 'pdf')}
+                          title="Download PDF Report"
+                        >
+                          📋
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             ))}

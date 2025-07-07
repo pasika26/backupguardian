@@ -273,6 +273,328 @@
   border-color: #667eea;
 }
 
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+}
+
+.modal-content {
+  background: white;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 24px 16px 24px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.modal-header h2 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #64748b;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+.modal-close:hover {
+  background: #f1f5f9;
+  color: #1e293b;
+}
+
+.modal-body {
+  padding: 24px;
+}
+
+.test-details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.details-section {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.details-section h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0 0 16px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.details-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.details-row:last-child {
+  border-bottom: none;
+}
+
+.details-row .label {
+  font-weight: 500;
+  color: #64748b;
+}
+
+.details-row .value {
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.details-row .value.status-passed {
+  color: #22c55e;
+}
+
+.details-row .value.status-failed {
+  color: #ef4444;
+}
+
+.details-row .value.status-pending {
+  color: #f59e0b;
+}
+
+.error-section {
+  grid-column: 1 / -1;
+  background: #fef2f2;
+  border-color: #fecaca;
+}
+
+.error-message {
+  background: white;
+  padding: 12px;
+  border-radius: 8px;
+  border-left: 4px solid #ef4444;
+  font-family: 'Monaco', 'Menlo', monospace;
+  font-size: 14px;
+  color: #dc2626;
+  overflow-x: auto;
+}
+
+.validation-results {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.validation-results h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0 0 16px 0;
+}
+
+.validation-stages {
+  display: grid;
+  gap: 12px;
+}
+
+.stage-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: white;
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+.stage-icon {
+  font-size: 16px;
+}
+
+.stage-name {
+  flex: 1;
+  font-weight: 500;
+  color: #1e293b;
+}
+
+.stage-status {
+  font-weight: 600;
+  color: #22c55e;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 16px 24px 24px 24px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.btn-secondary {
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-secondary:hover {
+  background: #e2e8f0;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+/* Download button styles */
+.test-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.download-buttons {
+  display: flex;
+  gap: 4px;
+}
+
+.download-button {
+  background: #10b981;
+  color: white;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.download-button:hover {
+  background: #059669;
+}
+
+.download-json {
+  background: #f59e0b;
+}
+
+.download-json:hover {
+  background: #d97706;
+}
+
+.download-pdf {
+  background: #ef4444;
+}
+
+.download-pdf:hover {
+  background: #dc2626;
+}
+
+/* Modal download buttons */
+.modal-download-buttons {
+  display: flex;
+  gap: 8px;
+  margin-right: auto;
+}
+
+.btn-download {
+  background: #10b981;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.btn-download:hover {
+  background: #059669;
+}
+
+.btn-json {
+  background: #f59e0b;
+}
+
+.btn-json:hover {
+  background: #d97706;
+}
+
+.btn-pdf {
+  background: #ef4444;
+}
+
+.btn-pdf:hover {
+  background: #dc2626;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 16px 24px 24px 24px;
+  border-top: 1px solid #e2e8f0;
+  align-items: center;
+}
+
 @media (max-width: 768px) {
   .dashboard-container {
     padding: 20px 15px;

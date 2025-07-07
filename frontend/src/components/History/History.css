@@ -442,3 +442,52 @@
   .col-date::before { content: "Date:"; font-weight: 600; }
   .col-actions::before { content: "Actions:"; font-weight: 600; }
 }
+
+/* Action buttons styling */
+.action-buttons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.download-buttons {
+  display: flex;
+  gap: 4px;
+}
+
+.download-button {
+  background: #10b981;
+  color: white;
+  border: none;
+  padding: 4px 6px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-size: 12px;
+  white-space: nowrap;
+  min-width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.download-button:hover {
+  background: #059669;
+}
+
+.download-json {
+  background: #f59e0b;
+}
+
+.download-json:hover {
+  background: #d97706;
+}
+
+.download-pdf {
+  background: #ef4444;
+}
+
+.download-pdf:hover {
+  background: #dc2626;
+}
