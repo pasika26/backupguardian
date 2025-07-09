@@ -72,15 +72,12 @@ router.post('/upload', authenticateToken, upload.single('backup'), async (req, r
     if (ext === '.dump') fileType = 'dump';
     if (ext === '.backup') fileType = 'custom';
     
-    // Generate backup ID
-    const backupId = Math.random().toString(36).substring(2) + Date.now().toString(36);
-    
-    // Save backup record to database
-    await query(`
-      INSERT INTO backups (id, user_id, file_name, file_path, file_size, file_type, database_name, description)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    // Save backup record to database (let database generate UUID)
+    const result = await query(`
+      INSERT INTO backups (user_id, file_name, file_path, file_size, file_type, database_name, description)
+      VALUES ($1, $2, $3, $4, $5, $6, $7)
+      RETURNING id
     `, [
-      backupId,
       userId,
       req.file.originalname,
       req.file.path,
@@ -89,6 +86,8 @@ router.post('/upload', authenticateToken, upload.single('backup'), async (req, r
       databaseName || null,
       description || null
     ]);
+    
+    const backupId = result.rows[0].id;
 
     // Create a test run record
     const testRunId = await ResultStorage.createTestRun({
