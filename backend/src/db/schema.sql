@@ -63,15 +63,15 @@ CREATE TABLE IF NOT EXISTS test_results (
 );
 
 -- Indexes for performance
-CREATE INDEX idx_users_email ON users(email);
-CREATE INDEX idx_backups_user_id ON backups(user_id);
-CREATE INDEX idx_backups_upload_date ON backups(upload_date);
-CREATE INDEX idx_test_runs_backup_id ON test_runs(backup_id);
-CREATE INDEX idx_test_runs_user_id ON test_runs(user_id);
-CREATE INDEX idx_test_runs_status ON test_runs(status);
-CREATE INDEX idx_test_runs_started_at ON test_runs(started_at);
-CREATE INDEX idx_test_results_test_run_id ON test_results(test_run_id);
-CREATE INDEX idx_test_results_test_type ON test_results(test_type);
+CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
+CREATE INDEX IF NOT EXISTS idx_backups_user_id ON backups(user_id);
+CREATE INDEX IF NOT EXISTS idx_backups_upload_date ON backups(upload_date);
+CREATE INDEX IF NOT EXISTS idx_test_runs_backup_id ON test_runs(backup_id);
+CREATE INDEX IF NOT EXISTS idx_test_runs_user_id ON test_runs(user_id);
+CREATE INDEX IF NOT EXISTS idx_test_runs_status ON test_runs(status);
+CREATE INDEX IF NOT EXISTS idx_test_runs_started_at ON test_runs(started_at);
+CREATE INDEX IF NOT EXISTS idx_test_results_test_run_id ON test_results(test_run_id);
+CREATE INDEX IF NOT EXISTS idx_test_results_test_type ON test_results(test_type);
 
 -- Trigger to update updated_at timestamps
 CREATE OR REPLACE FUNCTION update_updated_at_column()
