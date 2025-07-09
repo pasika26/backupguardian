@@ -14,11 +14,11 @@ class ResultStorage {
    */
   async storeValidationResult(validationResult, backupId, userId) {
     // Handle both PostgreSQL (with connection pooling) and SQLite
-    const isPostgreSQL = typeof this.db.connect === 'function';
+    const isPostgreSQL = process.env.USE_POSTGRESQL === 'true';
     let client = null;
     
     if (isPostgreSQL) {
-      client = await this.db.connect();
+      client = await this.db.pool.connect();
       await client.query('BEGIN');
     } else {
       // SQLite doesn't need connection pooling, use direct connection
@@ -359,7 +359,7 @@ class ResultStorage {
   async createTestRun({ backupId, userId, filename, fileSize, status = 'pending' }) {
     try {
       // Handle both PostgreSQL (with connection pooling) and SQLite
-      const isPostgreSQL = typeof this.db.connect === 'function';
+      const isPostgreSQL = process.env.USE_POSTGRESQL === 'true';
       
       if (isPostgreSQL) {
         // Let PostgreSQL generate UUID automatically
