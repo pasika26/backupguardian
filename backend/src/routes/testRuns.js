@@ -19,7 +19,7 @@ router.post('/', authenticateToken, async (req, res, next) => {
     }
     
     // Verify backup exists and user owns it
-    const backups = await query('SELECT id, user_id, file_name FROM backups WHERE id = ? AND is_active = 1 AND user_id = ?', [backupId, req.user.id]);
+    const backups = await query('SELECT id, user_id, file_name FROM backups WHERE id = $1 AND is_active = 1 AND user_id = $2', [backupId, req.user.id]);
     if (backups.rows.length === 0) {
       return res.status(404).json({
         success: false,
@@ -36,7 +36,7 @@ router.post('/', authenticateToken, async (req, res, next) => {
     // Create test run
     await query(`
       INSERT INTO test_runs (id, backup_id, user_id, status, test_database_name)
-      VALUES (?, ?, ?, 'pending', ?)
+      VALUES ($1, $2, $3, 'pending', $4)
     `, [testRunId, backupId, backup.user_id, testDatabaseName]);
     
     res.status(201).json({
@@ -66,16 +66,16 @@ router.get('/', authenticateToken, async (req, res, next) => {
   try {
     const { status, backupId } = req.query;
     
-    let whereClause = 'tr.user_id = ?';
+    let whereClause = 'tr.user_id = $1';
     const params = [req.user.id];
     
     if (status) {
-      whereClause += ' AND tr.status = ?';
+      whereClause += ' AND tr.status = $2';
       params.push(status);
     }
     
     if (backupId) {
-      whereClause += ' AND tr.backup_id = ?';
+      whereClause += ' AND tr.backup_id = $' + (params.length + 1);
       params.push(backupId);
     }
     
@@ -126,10 +126,10 @@ router.get('/', authenticateToken, async (req, res, next) => {
 router.get('/stats', authenticateToken, async (req, res, next) => {
   try {
     const stats = await Promise.all([
-      query('SELECT COUNT(*) as count FROM test_runs WHERE user_id = ?', [req.user.id]),
-      query('SELECT COUNT(*) as count FROM test_runs WHERE user_id = ? AND status = ?', [req.user.id, 'completed']),
-      query('SELECT COUNT(*) as count FROM test_runs WHERE user_id = ? AND status = ?', [req.user.id, 'failed']),
-      query('SELECT COUNT(*) as count FROM test_runs WHERE user_id = ? AND status = ?', [req.user.id, 'pending'])
+      query('SELECT COUNT(*) as count FROM test_runs WHERE user_id = $1', [req.user.id]),
+      query('SELECT COUNT(*) as count FROM test_runs WHERE user_id = $1 AND status = $2', [req.user.id, 'completed']),
+      query('SELECT COUNT(*) as count FROM test_runs WHERE user_id = $1 AND status = $2', [req.user.id, 'failed']),
+      query('SELECT COUNT(*) as count FROM test_runs WHERE user_id = $1 AND status = $2', [req.user.id, 'pending'])
     ]);
     
     res.json({
@@ -163,7 +163,7 @@ router.get('/:id', authenticateToken, async (req, res, next) => {
       FROM test_runs tr
       JOIN backups b ON tr.backup_id = b.id
       JOIN users u ON tr.user_id = u.id
-      WHERE tr.id = ? AND tr.user_id = ?
+      WHERE tr.id = $1 AND tr.user_id = $2
     `, [id, req.user.id]);
     
     if (testRuns.rows.length === 0) {
@@ -177,7 +177,7 @@ router.get('/:id', authenticateToken, async (req, res, next) => {
     const testResults = await query(`
       SELECT *
       FROM test_results
-      WHERE test_run_id = ?
+      WHERE test_run_id = $1
       ORDER BY created_at ASC
     `, [id]);
     
@@ -217,7 +217,7 @@ router.patch('/:id', authenticateToken, async (req, res, next) => {
     const params = [];
     
     if (status) {
-      updates.push('status = ?');
+      updates.push('status = $' + (params.length + 1));
       params.push(status);
       
       // Set completed_at if status is completed or failed
@@ -227,12 +227,12 @@ router.patch('/:id', authenticateToken, async (req, res, next) => {
     }
     
     if (errorMessage !== undefined) {
-      updates.push('error_message = ?');
+      updates.push('error_message = $' + (params.length + 1));
       params.push(errorMessage);
     }
     
     if (durationSeconds !== undefined) {
-      updates.push('duration_seconds = ?');
+      updates.push('duration_seconds = $' + (params.length + 1));
       params.push(durationSeconds);
     }
     
@@ -246,7 +246,7 @@ router.patch('/:id', authenticateToken, async (req, res, next) => {
     updates.push('updated_at = CURRENT_TIMESTAMP');
     params.push(id, req.user.id);
     
-    await query(`UPDATE test_runs SET ${updates.join(', ')} WHERE id = ? AND user_id = ?`, params);
+    await query(`UPDATE test_runs SET ${updates.join(', ')} WHERE id = $${params.length - 1} AND user_id = $${params.length}`, params);
     
     res.json({
       success: true,
@@ -277,7 +277,7 @@ router.get('/:id/report/json', authenticateToken, async (req, res, next) => {
       FROM test_runs tr
       JOIN backups b ON tr.backup_id = b.id
       JOIN users u ON tr.user_id = u.id
-      WHERE tr.id = ? AND tr.user_id = ?
+      WHERE tr.id = $1 AND tr.user_id = $2
     `, [id, req.user.id]);
     
     if (testRuns.rows.length === 0) {
@@ -293,7 +293,7 @@ router.get('/:id/report/json', authenticateToken, async (req, res, next) => {
     const testResults = await query(`
       SELECT *
       FROM test_results
-      WHERE test_run_id = ?
+      WHERE test_run_id = $1
       ORDER BY created_at ASC
     `, [id]);
     
@@ -356,7 +356,7 @@ router.get('/:id/report/pdf', authenticateToken, async (req, res, next) => {
       FROM test_runs tr
       JOIN backups b ON tr.backup_id = b.id
       JOIN users u ON tr.user_id = u.id
-      WHERE tr.id = ? AND tr.user_id = ?
+      WHERE tr.id = $1 AND tr.user_id = $2
     `, [id, req.user.id]);
     
     if (testRuns.rows.length === 0) {
@@ -372,7 +372,7 @@ router.get('/:id/report/pdf', authenticateToken, async (req, res, next) => {
     const testResults = await query(`
       SELECT *
       FROM test_results
-      WHERE test_run_id = ?
+      WHERE test_run_id = $1
       ORDER BY created_at ASC
     `, [id]);
     

@@ -157,7 +157,7 @@ router.get('/', authenticateToken, async (req, res, next) => {
       FROM backups b
       JOIN users u ON b.user_id = u.id
       LEFT JOIN test_runs tr ON b.id = tr.backup_id
-      WHERE b.is_active = 1 AND b.user_id = ?
+      WHERE b.is_active = 1 AND b.user_id = $1
       GROUP BY b.id
       ORDER BY b.upload_date DESC
     `, [req.user.id]);
@@ -191,7 +191,7 @@ router.get('/:id', authenticateToken, async (req, res, next) => {
         u.last_name
       FROM backups b
       JOIN users u ON b.user_id = u.id
-      WHERE b.id = ? AND b.is_active = 1 AND b.user_id = ?
+      WHERE b.id = $1 AND b.is_active = 1 AND b.user_id = $2
     `, [id, req.user.id]);
     
     if (backups.rows.length === 0) {
@@ -205,7 +205,7 @@ router.get('/:id', authenticateToken, async (req, res, next) => {
     const testRuns = await query(`
       SELECT id, status, started_at, completed_at, duration_seconds, error_message
       FROM test_runs 
-      WHERE backup_id = ?
+      WHERE backup_id = $1
       ORDER BY started_at DESC
     `, [id]);
     
@@ -231,7 +231,7 @@ router.delete('/:id', authenticateToken, async (req, res, next) => {
     const { id } = req.params;
     
     // Get backup file path first (ensure user owns it)
-    const backups = await query('SELECT file_path FROM backups WHERE id = ? AND user_id = ?', [id, req.user.id]);
+    const backups = await query('SELECT file_path FROM backups WHERE id = $1 AND user_id = $2', [id, req.user.id]);
     
     if (backups.rows.length === 0) {
       return res.status(404).json({
@@ -241,7 +241,7 @@ router.delete('/:id', authenticateToken, async (req, res, next) => {
     }
     
     // Soft delete (set is_active = 0)
-    await query('UPDATE backups SET is_active = 0 WHERE id = ?', [id]);
+    await query('UPDATE backups SET is_active = 0 WHERE id = $1', [id]);
     
     // Optionally delete physical file
     try {

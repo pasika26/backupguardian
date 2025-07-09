@@ -82,11 +82,14 @@ BEGIN
 END;
 $$ language 'plpgsql';
 
+DROP TRIGGER IF EXISTS update_users_updated_at ON users;
 CREATE TRIGGER update_users_updated_at BEFORE UPDATE ON users
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
+DROP TRIGGER IF EXISTS update_backups_updated_at ON backups;
 CREATE TRIGGER update_backups_updated_at BEFORE UPDATE ON backups
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
+DROP TRIGGER IF EXISTS update_test_runs_updated_at ON test_runs;
 CREATE TRIGGER update_test_runs_updated_at BEFORE UPDATE ON test_runs
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
