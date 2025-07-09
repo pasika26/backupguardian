@@ -5,7 +5,7 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- Users table
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     email VARCHAR(255) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
@@ -18,7 +18,7 @@ CREATE TABLE users (
 );
 
 -- Backups table
-CREATE TABLE backups (
+CREATE TABLE IF NOT EXISTS backups (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     file_name VARCHAR(255) NOT NULL,
@@ -34,7 +34,7 @@ CREATE TABLE backups (
 );
 
 -- Test runs table
-CREATE TABLE test_runs (
+CREATE TABLE IF NOT EXISTS test_runs (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     backup_id UUID NOT NULL REFERENCES backups(id) ON DELETE CASCADE,
     user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
@@ -50,7 +50,7 @@ CREATE TABLE test_runs (
 );
 
 -- Test results table
-CREATE TABLE test_results (
+CREATE TABLE IF NOT EXISTS test_results (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     test_run_id UUID NOT NULL REFERENCES test_runs(id) ON DELETE CASCADE,
     test_type VARCHAR(100) NOT NULL, -- 'restore_success', 'table_count', 'row_count', 'schema_validation', 'data_sampling'
