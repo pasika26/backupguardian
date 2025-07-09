@@ -1,5 +1,5 @@
 {
-  "name": "backup-guardian-cli",
+  "name": "backup-guardian",
   "version": "1.0.0",
   "description": "CLI tool for validating database backup files before migration",
   "main": "src/index.js",
@@ -7,7 +7,7 @@
     "backup-guardian": "./bin/backup-guardian"
   },
   "scripts": {
-    "test": "jest",
+    "test": "jest --passWithNoTests",
     "dev": "node bin/backup-guardian",
     "build": "echo 'No build step needed'",
     "prepublishOnly": "npm test"

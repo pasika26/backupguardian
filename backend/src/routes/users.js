@@ -33,14 +33,14 @@ router.post('/register', async (req, res, next) => {
     // Hash password
     const passwordHash = await bcrypt.hash(password, 10);
     
-    // Generate user ID
-    const userId = Math.random().toString(36).substring(2) + Date.now().toString(36);
+    // Create user (let database generate UUID)
+    const result = await query(`
+      INSERT INTO users (email, password_hash, first_name, last_name, email_verified)
+      VALUES ($1, $2, $3, $4, false)
+      RETURNING id
+    `, [email, passwordHash, firstName || null, lastName || null]);
     
-    // Create user
-    await query(`
-      INSERT INTO users (id, email, password_hash, first_name, last_name, email_verified)
-      VALUES ($1, $2, $3, $4, $5, false)
-    `, [userId, email, passwordHash, firstName || null, lastName || null]);
+    const userId = result.rows[0].id;
     
     // Generate JWT
     const token = jwt.sign(

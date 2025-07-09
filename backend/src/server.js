@@ -16,6 +16,19 @@ const healthRoutes = require('./routes/health');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Auto-run migrations on startup in production
+if (process.env.NODE_ENV === 'production' && process.env.USE_POSTGRESQL === 'true') {
+  const { runMigration } = require('./db/migrate');
+  
+  // Run migrations before starting server
+  runMigration().then(() => {
+    console.log('✅ Database migrations completed');
+  }).catch((error) => {
+    console.error('❌ Migration failed:', error.message);
+    // Don't exit - let health check handle database connectivity
+  });
+}
+
 // Security middleware
 app.use(helmet());
 app.use(cors({
