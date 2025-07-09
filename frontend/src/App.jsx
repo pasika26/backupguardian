@@ -27,7 +27,7 @@ function App() {
     }
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL || 'https://backupguardian-production.up.railway.app'}/api/users/profile`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL || 'https://backupguardian-production.up.railway.app'}/api/users/me`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
 

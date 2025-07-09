@@ -55,8 +55,8 @@ const Register = ({ onToggleAuth, onLogin }) => {
         throw new Error(data.message || 'Registration failed');
       }
 
-      localStorage.setItem('token', data.token);
-      onLogin(data.user);
+      localStorage.setItem('token', data.data.token);
+      onLogin(data.data.user);
     } catch (err) {
       setError(err.message);
     } finally {

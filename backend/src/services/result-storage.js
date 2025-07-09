@@ -358,16 +358,33 @@ class ResultStorage {
    */
   async createTestRun({ backupId, userId, filename, fileSize, status = 'pending' }) {
     try {
-      const testRunId = 'tr_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+      // Handle both PostgreSQL (with connection pooling) and SQLite
+      const isPostgreSQL = typeof this.db.connect === 'function';
       
-      await this.db.run(`
-        INSERT INTO test_runs (
-          id, backup_id, user_id, status, created_at, updated_at
-        ) VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-      `, [testRunId, backupId, userId, status]);
-      
-      console.log(`✅ Created test run: ${testRunId} for backup: ${backupId}`);
-      return testRunId;
+      if (isPostgreSQL) {
+        // Let PostgreSQL generate UUID automatically
+        const result = await this.db.query(`
+          INSERT INTO test_runs (
+            backup_id, user_id, status, created_at, updated_at
+          ) VALUES ($1, $2, $3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+          RETURNING id
+        `, [backupId, userId, status]);
+        
+        const testRunId = result.rows[0].id;
+        console.log(`✅ Created test run: ${testRunId} for backup: ${backupId}`);
+        return testRunId;
+      } else {
+        // SQLite uses string IDs
+        const testRunId = 'tr_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        await this.db.run(`
+          INSERT INTO test_runs (
+            id, backup_id, user_id, status, created_at, updated_at
+          ) VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+        `, [testRunId, backupId, userId, status]);
+        
+        console.log(`✅ Created test run: ${testRunId} for backup: ${backupId}`);
+        return testRunId;
+      }
       
     } catch (error) {
       console.error('❌ Failed to create test run:', error);
