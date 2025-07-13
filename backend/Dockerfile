@@ -1,8 +1,8 @@
 # Use Node.js 18 LTS
 FROM node:18-alpine
 
-# Install Docker CLI for container management
-RUN apk add --no-cache docker-cli
+# Install PostgreSQL client tools for backup validation
+RUN apk add --no-cache postgresql-client
 
 # Set working directory
 WORKDIR /app

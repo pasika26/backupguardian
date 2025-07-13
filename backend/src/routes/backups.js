@@ -6,7 +6,7 @@ const { query } = require('../db');
 const { authenticateToken } = require('../middleware/auth');
 const ResultStorage = require('../services/result-storage');
 const StorageService = require('../services/storage-service');
-const BackupValidator = require('../services/backup-validator');
+const RailwayValidator = require('../services/railway-validator');
 const router = express.Router();
 
 // Configure multer for file uploads
@@ -109,7 +109,7 @@ router.post('/upload', authenticateToken, upload.single('backup'), async (req, r
       });
 
       // Run validation directly (no queue)
-      const validator = new BackupValidator();
+      const validator = new RailwayValidator();
       const validationResult = await validator.validateBackup(req.file.path, req.file.originalname);
       
       // Update test run with results
