@@ -200,20 +200,20 @@ class RailwayValidator {
         args = ['-d', tempDbUrl, '--verbose', backupFilePath];
       }
 
-      const process = spawn(command, args);
+      const childProcess = spawn(command, args);
       
       let stdout = '';
       let stderr = '';
 
-      process.stdout.on('data', (data) => {
+      childProcess.stdout.on('data', (data) => {
         stdout += data.toString();
       });
 
-      process.stderr.on('data', (data) => {
+      childProcess.stderr.on('data', (data) => {
         stderr += data.toString();
       });
 
-      process.on('close', (code) => {
+      childProcess.on('close', (code) => {
         if (code === 0) {
           console.log(`✅ Backup restored successfully to ${tempDbName}`);
           
@@ -232,7 +232,7 @@ class RailwayValidator {
         }
       });
 
-      process.on('error', (error) => {
+      childProcess.on('error', (error) => {
         reject(new Error(`Failed to start restore process: ${error.message}`));
       });
     });
