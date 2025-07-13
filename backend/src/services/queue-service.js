@@ -2,15 +2,13 @@ const Queue = require('bull');
 const redis = require('redis');
 
 // Queue for backup validation jobs
-const validationQueue = new Queue('backup validation', 
-  process.env.REDIS_URL || {
-    redis: {
-      port: process.env.REDIS_PORT || 6379,
-      host: process.env.REDIS_HOST || '127.0.0.1',
-      // password: process.env.REDIS_PASSWORD, // if needed
-    }
+const validationQueue = new Queue('backup validation', {
+  redis: process.env.REDIS_URL || {
+    port: process.env.REDIS_PORT || 6379,
+    host: process.env.REDIS_HOST || '127.0.0.1',
+    // password: process.env.REDIS_PASSWORD, // if needed
   }
-);
+});
 
 // Import services for job processing
 const BackupValidator = require('./backup-validator');
