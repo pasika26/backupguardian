@@ -5,7 +5,7 @@ const ora = require('ora');
 const Table = require('cli-table3');
 
 // Import validation services from backend
-const BackupValidator = require('../../../backend/src/services/backup-validator');
+const RailwayValidator = require('../../../backend/src/services/railway-validator');
 
 module.exports = (program) => {
   program
@@ -41,7 +41,7 @@ async function validateBackup(filePath, options) {
   
   try {
     // Initialize backup validator
-    const validator = new BackupValidator();
+    const validator = new RailwayValidator();
     
     // Configure validation options
     const validationOptions = {

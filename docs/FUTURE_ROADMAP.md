@@ -112,10 +112,19 @@ This document outlines features that were intentionally removed from the MVP to 
 
 ## 🗓️ **Development Timeline**
 
-### **Q1 2025: MVP Launch**
+### **Q1 2025: MVP Launch** ✅
 - Solo user workflow
 - PostgreSQL support
+- Direct backup validation (file format, SQL syntax, basic integrity)
 - Basic validation & reporting
+
+### **Q1.5 2025: Phase 2 - Advanced Validation**
+- Background job queue (Redis/Bull.js)
+- Docker container validation
+  - Full PostgreSQL/MySQL database restore testing
+  - Real data integrity verification
+- Enhanced reporting with detailed metrics
+- Email notifications for validation results
 
 ### **Q2 2025: V2 Team Features**
 - Multi-user support
