@@ -400,14 +400,15 @@ class ResultStorage {
    */
   async updateTestRun(testRunId, updates) {
     try {
-      const setClause = Object.keys(updates).map(key => `${key} = ?`).join(', ');
+      // Use PostgreSQL style with numbered parameters
+      const setClause = Object.keys(updates).map((key, index) => `${key} = $${index + 1}`).join(', ');
       const values = Object.values(updates);
       values.push(testRunId);
       
-      await this.db.run(`
+      await this.db.query(`
         UPDATE test_runs 
         SET ${setClause}, updated_at = CURRENT_TIMESTAMP 
-        WHERE id = ?
+        WHERE id = $${values.length}
       `, values);
       
       console.log(`✅ Updated test run: ${testRunId}`);
