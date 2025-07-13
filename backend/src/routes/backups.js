@@ -4,9 +4,9 @@ const path = require('path');
 const fs = require('fs').promises;
 const { query } = require('../db');
 const { authenticateToken } = require('../middleware/auth');
-// const QueueService = require('../services/queue-service'); // Disabled - Redis issues
 const ResultStorage = require('../services/result-storage');
 const StorageService = require('../services/storage-service');
+const BackupValidator = require('../services/backup-validator');
 const router = express.Router();
 
 // Configure multer for file uploads
@@ -98,11 +98,45 @@ router.post('/upload', authenticateToken, upload.single('backup'), async (req, r
       status: 'pending'
     });
 
-    console.log('✅ Upload completed, validation queue disabled');
+    // Run direct validation
+    console.log('🔄 Starting backup validation...');
+    
+    try {
+      // Update test run to running
+      await ResultStorage.updateTestRun(testRunId, {
+        status: 'running',
+        started_at: new Date()
+      });
+
+      // Run validation directly (no queue)
+      const validator = new BackupValidator();
+      const validationResult = await validator.validateBackup(req.file.path, req.file.originalname);
+      
+      // Update test run with results
+      await ResultStorage.updateTestRun(testRunId, {
+        status: validationResult.success ? 'passed' : 'failed',
+        completed_at: new Date(),
+        duration_seconds: Math.round((Date.now() - new Date()) / 1000),
+        error_message: validationResult.errors?.length > 0 ? validationResult.errors.join('; ') : null
+      });
+
+      console.log(`✅ Validation completed: ${validationResult.success ? 'PASSED' : 'FAILED'}`);
+      
+    } catch (validationError) {
+      console.error('❌ Validation failed:', validationError);
+      
+      // Update test run with error
+      await ResultStorage.updateTestRun(testRunId, {
+        status: 'failed',
+        error_message: validationError.message,
+        completed_at: new Date(),
+        duration_seconds: 0
+      });
+    }
     
     res.status(201).json({
       success: true,
-      message: 'Backup uploaded successfully! Validation will be added in future updates.',
+      message: 'Backup uploaded and validated successfully!',
       data: {
         backup: {
           id: backupId,
