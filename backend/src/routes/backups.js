@@ -4,7 +4,7 @@ const path = require('path');
 const fs = require('fs').promises;
 const { query } = require('../db');
 const { authenticateToken } = require('../middleware/auth');
-const QueueService = require('../services/queue-service');
+// const QueueService = require('../services/queue-service'); // Disabled - Redis issues
 const ResultStorage = require('../services/result-storage');
 const StorageService = require('../services/storage-service');
 const router = express.Router();
@@ -98,19 +98,7 @@ router.post('/upload', authenticateToken, upload.single('backup'), async (req, r
       status: 'pending'
     });
 
-    // Queue the validation job
-    try {
-      await QueueService.queueValidation({
-        testRunId,
-        backupId,
-        filePath: req.file.path,
-        filename: req.file.originalname,
-        userId,
-        startedAt: new Date()
-      });
-    } catch (queueError) {
-      console.error('Queue failed but continuing:', queueError);
-    }
+    console.log('✅ Upload completed, validation queue disabled');
     
     res.status(201).json({
       success: true,
