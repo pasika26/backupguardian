@@ -30,9 +30,9 @@ function LandingPage() {
           
           {/* Benefits integrated into hero */}
           <div className="hero-benefits">
-            <div className="benefit">✅ Instant validation</div>
-            <div className="benefit">✅ No data storage</div>
-            <div className="benefit">✅ Detailed reports</div>
+            <div className="benefit" aria-label="Checkmark icon indicating instant validation capability">✅ Instant validation</div>
+            <div className="benefit" aria-label="Checkmark icon indicating no data storage policy">✅ No data storage</div>
+            <div className="benefit" aria-label="Checkmark icon indicating detailed reports feature">✅ Detailed reports</div>
           </div>
           
           <Link to="/login" className="cta-button">
@@ -51,15 +51,15 @@ function LandingPage() {
           </p>
           <div className="prevention-features">
             <div className="prevention-item">
-              <h3>🔍 Proactive Backup Validation</h3>
+              <h3><span aria-label="Magnifying glass icon representing proactive validation">🔍</span> Proactive Backup Validation</h3>
               <p>Automatically detects corrupted or incomplete backups before disasters strike</p>
             </div>
             <div className="prevention-item">
-              <h3>⚡ Real-Time Failure Alerts</h3>
+              <h3><span aria-label="Lightning bolt icon representing real-time speed">⚡</span> Real-Time Failure Alerts</h3>
               <p>Immediate notifications when backup processes fail or produce invalid files</p>
             </div>
             <div className="prevention-item">
-              <h3>🛡️ Continuous Data Protection</h3>
+              <h3><span aria-label="Shield icon representing data protection">🛡️</span> Continuous Data Protection</h3>
               <p>Regular validation schedules ensure your backup strategy actually protects your data</p>
             </div>
           </div>
@@ -198,6 +198,8 @@ function LandingPage() {
             <div className="footer-links">
               <div className="footer-column">
                 <h4>Product</h4>
+                <Link to="/features">Features</Link>
+                <Link to="/faq">FAQ</Link>
                 <a href="/docs">Documentation</a>
                 <a href="/cli">CLI Tool</a>
               </div>
