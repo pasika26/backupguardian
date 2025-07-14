@@ -53,12 +53,14 @@ function Navigation({ user, onLogout }) {
           >
             Features
           </Link>
-          <Link 
-            to="/admin" 
-            className={`nav-link admin-link ${location.pathname === '/admin' ? 'active' : ''}`}
-          >
-            🔧 Admin
-          </Link>
+          {user.isAdmin && (
+            <Link 
+              to="/admin" 
+              className={`nav-link admin-link ${location.pathname === '/admin' ? 'active' : ''}`}
+            >
+              🔧 Admin
+            </Link>
+          )}
         </div>
 
         <div className="nav-user">
@@ -179,12 +181,16 @@ function App() {
           
           <Route path="/admin" element={
             user ? (
-              <>
-                <Navigation user={user} onLogout={handleLogout} />
-                <main className="app-main">
-                  <AdminDashboard />
-                </main>
-              </>
+              user.isAdmin ? (
+                <>
+                  <Navigation user={user} onLogout={handleLogout} />
+                  <main className="app-main">
+                    <AdminDashboard />
+                  </main>
+                </>
+              ) : (
+                <Navigate to="/dashboard" />
+              )
             ) : (
               <Navigate to="/login" />
             )

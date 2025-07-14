@@ -2,12 +2,13 @@ const express = require('express');
 const router = express.Router();
 const { query } = require('../db');
 const { authenticateToken } = require('../middleware/auth');
+const { requireAdmin } = require('../middleware/adminAuth');
 
 /**
  * Get admin dashboard statistics
  * GET /api/admin/stats
  */
-router.get('/stats', authenticateToken, async (req, res, next) => {
+router.get('/stats', authenticateToken, requireAdmin, async (req, res, next) => {
   try {
     // Total users
     const totalUsers = await query('SELECT COUNT(*) as count FROM users');
@@ -75,7 +76,7 @@ router.get('/stats', authenticateToken, async (req, res, next) => {
  * Get all users with activity info
  * GET /api/admin/users
  */
-router.get('/users', authenticateToken, async (req, res, next) => {
+router.get('/users', authenticateToken, requireAdmin, async (req, res, next) => {
   try {
     const users = await query(`
       SELECT 
@@ -120,7 +121,7 @@ router.get('/users', authenticateToken, async (req, res, next) => {
  * Get recent activity
  * GET /api/admin/activity
  */
-router.get('/activity', authenticateToken, async (req, res, next) => {
+router.get('/activity', authenticateToken, requireAdmin, async (req, res, next) => {
   try {
     const recentBackups = await query(`
       SELECT 

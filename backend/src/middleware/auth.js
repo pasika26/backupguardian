@@ -23,7 +23,7 @@ const authenticateToken = async (req, res, next) => {
     
     // Get user from database to ensure still exists and active
     const users = await query(
-      'SELECT id, email, first_name, last_name, is_active, email_verified FROM users WHERE id = $1',
+      'SELECT id, email, first_name, last_name, is_active, email_verified, is_admin FROM users WHERE id = $1',
       [decoded.userId]
     );
     
@@ -50,7 +50,8 @@ const authenticateToken = async (req, res, next) => {
       email: user.email,
       firstName: user.first_name,
       lastName: user.last_name,
-      emailVerified: Boolean(user.email_verified)
+      emailVerified: Boolean(user.email_verified),
+      isAdmin: Boolean(user.is_admin)
     };
     
     next();
@@ -91,7 +92,7 @@ const optionalAuth = async (req, res, next) => {
     if (token) {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
       const users = await query(
-        'SELECT id, email, first_name, last_name, is_active, email_verified FROM users WHERE id = $1',
+        'SELECT id, email, first_name, last_name, is_active, email_verified, is_admin FROM users WHERE id = $1',
         [decoded.userId]
       );
       
@@ -102,7 +103,8 @@ const optionalAuth = async (req, res, next) => {
           email: user.email,
           firstName: user.first_name,
           lastName: user.last_name,
-          emailVerified: Boolean(user.email_verified)
+          emailVerified: Boolean(user.email_verified),
+          isAdmin: Boolean(user.is_admin)
         };
       }
     }

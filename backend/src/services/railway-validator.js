@@ -12,9 +12,7 @@ class RailwayValidator {
     // Use same connection as main app
     this.pool = new Pool({
       connectionString: process.env.DATABASE_URL,
-      ssl: process.env.NODE_ENV === 'production' ? { 
-        rejectUnauthorized: false 
-      } : false,
+      ssl: false, // Disable SSL for Railway external proxy
       max: 10, // Separate pool for validation
     });
   }
@@ -298,9 +296,7 @@ class RailwayValidator {
     const tempDbUrl = process.env.DATABASE_URL.replace(/\/[^\/]*$/, `/${tempDbName}`);
     const tempPool = new Pool({
       connectionString: tempDbUrl,
-      ssl: process.env.NODE_ENV === 'production' ? { 
-        rejectUnauthorized: false 
-      } : false,
+      ssl: false, // Disable SSL for Railway external proxy
     });
 
     try {
