@@ -192,11 +192,25 @@ class RailwayValidator {
           if (error) {
             reject(new Error('PostgreSQL client tools not found - psql command not available'));
           } else {
-            console.log('✅ PostgreSQL client found at:', stdout.trim());
+            console.log('✅ PostgreSQL psql found at:', stdout.trim());
             resolve();
           }
         });
       });
+      
+      // Also check for pg_restore if not SQL file
+      if (result.fileInfo.type !== 'sql') {
+        await new Promise((resolve, reject) => {
+          exec('which pg_restore', (error, stdout) => {
+            if (error) {
+              reject(new Error('PostgreSQL client tools not found - pg_restore command not available'));
+            } else {
+              console.log('✅ PostgreSQL pg_restore found at:', stdout.trim());
+              resolve();
+            }
+          });
+        });
+      }
     } catch (error) {
       throw error;
     }
