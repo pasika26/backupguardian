@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+
+# Crawl-delay for being nice to servers
+Crawl-delay: 1
+
+# Sitemap
+Sitemap: https://backupguardian.vercel.app/sitemap.xml

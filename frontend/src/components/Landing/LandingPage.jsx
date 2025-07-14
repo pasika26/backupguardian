@@ -22,10 +22,10 @@ function LandingPage({ onGetStarted, onNavigate }) {
       <section className="hero">
         <div className="hero-content">
           <h1 className="hero-title">
-            Validate your PostgreSQL backups — before it's too late.
+            Backup Guardian: Secure Your Database Backups
           </h1>
           <p className="hero-subtitle">
-            Automatic. Reliable. No setup required.
+            Validate your PostgreSQL backups — before it's too late. Automatic. Reliable. No setup required.
           </p>
           
           {/* Benefits integrated into hero */}
@@ -41,12 +41,12 @@ function LandingPage({ onGetStarted, onNavigate }) {
         </div>
       </section>
 
-      {/* Why Section - Compact */}
+      {/* Real-Time Monitoring & Alerts */}
       <section className="why-section-compact">
         <div className="container">
-          <h2>✅ Why Backup Guardian?</h2>
+          <h2>Real-Time Monitoring & Alerts</h2>
           <p className="why-description">
-            Database backups fail silently — corrupt files, mismatched versions, or partial exports can leave you exposed. 
+            Get instant notifications when backups fail or succeed. Database backups fail silently — corrupt files, mismatched versions, or partial exports can leave you exposed. 
             Backup Guardian validates your PostgreSQL backups instantly, giving you confidence that your data is safe.
           </p>
         </div>
@@ -94,9 +94,11 @@ function LandingPage({ onGetStarted, onNavigate }) {
         </div>
       </section>
 
-      {/* Features Grid */}
+      {/* Health Checks for Peace of Mind */}
       <section className="features-grid">
         <div className="container">
+          <h2>Health Checks for Peace of Mind</h2>
+          <p>Monitor backup status, retention policies, and integrity with automated health assessments.</p>
           <div className="feature-columns">
             <div className="feature-column">
               <h3>🔒 Security First</h3>
@@ -118,22 +120,22 @@ function LandingPage({ onGetStarted, onNavigate }) {
         </div>
       </section>
 
-      {/* Use Cases */}
+      {/* Why Choose Backup Guardian? */}
       <section className="use-cases">
         <div className="container">
-          <h2>💡 Perfect For</h2>
+          <h2>Why Choose Backup Guardian?</h2>
           <div className="use-case-grid">
             <div className="use-case">
-              <h3>🚀 Startup Teams</h3>
+              <h3>🚀 Automated monitoring</h3>
               <p>Validate backups without dedicated DevOps resources</p>
             </div>
             <div className="use-case">
-              <h3>⚡ SRE Teams</h3>
-              <p>Integrate into CI/CD pipelines and monitoring</p>
+              <h3>⚡ Customizable alerts</h3>
+              <p>Integrate into CI/CD pipelines and monitoring workflows</p>
             </div>
             <div className="use-case">
-              <h3>🛠️ Solo Developers</h3>
-              <p>Quick validation for personal projects</p>
+              <h3>🛠️ Simple dashboard view</h3>
+              <p>Quick validation and monitoring for all your projects</p>
             </div>
           </div>
         </div>
