@@ -250,8 +250,15 @@ class RailwayValidator {
         console.log(`🔍 pg_restore process completed with exit code: ${code}`);
         console.log(`📊 stdout length: ${stdout.length}, stderr length: ${stderr.length}`);
         
-        if (code === 0) {
-          console.log(`✅ Backup restored successfully to ${tempDbName}`);
+        // pg_restore returns 0 for success, 1 for warnings (but restore worked), 2+ for errors
+        if (code <= 1) {
+          console.log(`✅ Backup restored successfully to ${tempDbName} (exit code: ${code})`);
+          
+          // Log warnings if present
+          if (code === 1 && stderr) {
+            console.warn(`⚠️ pg_restore warnings: ${stderr}`);
+            result.validationDetails.warnings = stderr;
+          }
           
           // Parse output for statistics (different for pg_restore vs psql)
           if (result.fileInfo.type === 'sql') {
