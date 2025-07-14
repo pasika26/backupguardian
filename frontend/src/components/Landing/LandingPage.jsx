@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import './LandingPage.css';
 
-function LandingPage({ onGetStarted, onNavigate }) {
+function LandingPage() {
   return (
     <div className="landing-page">
       {/* Header */}
@@ -11,9 +11,9 @@ function LandingPage({ onGetStarted, onNavigate }) {
             <h1>🛡️ Backup Guardian</h1>
           </div>
           <div className="nav-actions">
-            <button className="login-btn" onClick={onGetStarted}>
+            <Link to="/login" className="login-btn">
               Login / Sign Up
-            </button>
+            </Link>
           </div>
         </nav>
       </header>
@@ -35,9 +35,9 @@ function LandingPage({ onGetStarted, onNavigate }) {
             <div className="benefit">✅ Detailed reports</div>
           </div>
           
-          <button className="cta-button" onClick={onGetStarted}>
+          <Link to="/login" className="cta-button">
             Start Validation →
-          </button>
+          </Link>
         </div>
       </section>
 
@@ -79,9 +79,9 @@ function LandingPage({ onGetStarted, onNavigate }) {
             <div className="usage-option-compact">
               <h3>🌐 Web Interface</h3>
               <p>Easy drag-and-drop validation with visual reports</p>
-              <button className="cta-button" onClick={onGetStarted}>
+              <Link to="/login" className="cta-button">
                 Try Web App →
-              </button>
+              </Link>
             </div>
             <div className="usage-option-compact">
               <h3>⌨️ Command Line</h3>
@@ -167,9 +167,9 @@ function LandingPage({ onGetStarted, onNavigate }) {
         <div className="container">
           <h2>🚀 Get Started with Backup Guardian</h2>
           <p>Open source. Self-hosted. No lock-in.<br />Validate your backups with confidence.</p>
-          <button className="cta-button" onClick={onGetStarted}>
+          <Link to="/login" className="cta-button">
             Start Validation →
-          </button>
+          </Link>
         </div>
       </section>
 
@@ -189,8 +189,8 @@ function LandingPage({ onGetStarted, onNavigate }) {
               </div>
               <div className="footer-column">
                 <h4>Legal</h4>
-                <button onClick={() => onNavigate('terms')} className="footer-link">Terms of Service</button>
-                <button onClick={() => onNavigate('privacy')} className="footer-link">Privacy Policy</button>
+                <Link to="/terms" className="footer-link">Terms of Service</Link>
+                <Link to="/privacy" className="footer-link">Privacy Policy</Link>
                 <a href="/contact">Contact Us</a>
               </div>
             </div>

@@ -1,12 +1,13 @@
+import { Link } from 'react-router-dom';
 import './LegalPage.css';
 
-function TermsOfUse({ onBackToHome }) {
+function TermsOfUse() {
   return (
     <div className="legal-page">
       <div className="legal-header">
-        <button className="back-button" onClick={onBackToHome}>
+        <Link to="/" className="back-button">
           ← Back to Home
-        </button>
+        </Link>
         <h1>🛡️ Backup Guardian</h1>
       </div>
       
