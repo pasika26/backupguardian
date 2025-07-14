@@ -16,11 +16,11 @@ router.get('/stats', authenticateToken, async (req, res, next) => {
     const recentUsers = await query(`
       SELECT COUNT(*) as count 
       FROM users 
-      WHERE created_at >= NOW() - INTERVAL '30 days'
+      WHERE created_at >= CURRENT_DATE - INTERVAL '30 days'
     `);
     
     // Total backups uploaded
-    const totalBackups = await query('SELECT COUNT(*) as count FROM backups WHERE is_active = 1');
+    const totalBackups = await query('SELECT COUNT(*) as count FROM backups WHERE is_active = true');
     
     // Total test runs
     const totalTests = await query('SELECT COUNT(*) as count FROM test_runs');
@@ -38,7 +38,7 @@ router.get('/stats', authenticateToken, async (req, res, next) => {
         DATE(created_at) as date,
         COUNT(*) as uploads
       FROM backups 
-      WHERE created_at >= NOW() - INTERVAL '7 days'
+      WHERE created_at >= CURRENT_DATE - INTERVAL '7 days'
       GROUP BY DATE(created_at)
       ORDER BY date DESC
     `);
@@ -89,7 +89,7 @@ router.get('/users', authenticateToken, async (req, res, next) => {
         MAX(b.upload_date) as last_upload,
         MAX(tr.started_at) as last_test
       FROM users u
-      LEFT JOIN backups b ON u.id = b.user_id AND b.is_active = 1
+      LEFT JOIN backups b ON u.id = b.user_id AND b.is_active = true
       LEFT JOIN test_runs tr ON u.id = tr.user_id
       GROUP BY u.id, u.email, u.first_name, u.last_name, u.created_at
       ORDER BY u.created_at DESC
@@ -131,7 +131,7 @@ router.get('/activity', authenticateToken, async (req, res, next) => {
       FROM backups b
       JOIN users u ON b.user_id = u.id
       LEFT JOIN test_runs tr ON b.id = tr.backup_id
-      WHERE b.is_active = 1
+      WHERE b.is_active = true
       ORDER BY b.upload_date DESC
       LIMIT 20
     `);
