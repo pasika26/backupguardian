@@ -228,7 +228,7 @@ class RailwayValidator {
       } else if (result.fileInfo.type === 'pg_backup' || result.fileInfo.type === 'pg_dump') {
         // Use pg_restore for backup/dump files
         command = 'pg_restore';
-        args = ['-d', tempDbUrl, '--verbose', backupFilePath];
+        args = ['-d', tempDbUrl, '--verbose', '--no-owner', '--no-privileges', backupFilePath];
       } else {
         throw new Error(`Unsupported file type: ${result.fileInfo.type}`);
       }
