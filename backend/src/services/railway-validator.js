@@ -184,6 +184,23 @@ class RailwayValidator {
   async restoreBackup(backupFilePath, tempDbName, result) {
     console.log(`📥 Restoring backup to database: ${tempDbName}`);
     
+    // Check if PostgreSQL client tools are available
+    const { exec } = require('child_process');
+    try {
+      await new Promise((resolve, reject) => {
+        exec('which psql', (error, stdout) => {
+          if (error) {
+            reject(new Error('PostgreSQL client tools not found - psql command not available'));
+          } else {
+            console.log('✅ PostgreSQL client found at:', stdout.trim());
+            resolve();
+          }
+        });
+      });
+    } catch (error) {
+      throw error;
+    }
+    
     return new Promise((resolve, reject) => {
       // Build connection string for temp database
       const tempDbUrl = process.env.DATABASE_URL.replace(/\/[^\/]*$/, `/${tempDbName}`);
