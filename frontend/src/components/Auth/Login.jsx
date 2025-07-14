@@ -40,7 +40,9 @@ const Login = ({ onToggleAuth, onLogin }) => {
       }
 
       localStorage.setItem('token', data.data.token);
+      console.log('Login successful, calling onLogin with:', data.data.user);
       onLogin(data.data.user);
+      console.log('Navigating to dashboard...');
       navigate('/database-backup-monitoring');
     } catch (err) {
       setError(err.message);

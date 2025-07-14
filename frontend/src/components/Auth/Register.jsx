@@ -59,7 +59,9 @@ const Register = ({ onToggleAuth, onLogin }) => {
       }
 
       localStorage.setItem('token', data.data.token);
+      console.log('Registration successful, calling onLogin with:', data.data.user);
       onLogin(data.data.user);
+      console.log('Navigating to dashboard...');
       navigate('/database-backup-monitoring');
     } catch (err) {
       setError(err.message);
