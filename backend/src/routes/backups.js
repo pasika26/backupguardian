@@ -125,21 +125,21 @@ router.post('/upload', authenticateToken, upload.single('backup'), async (req, r
       
       // Store file validation stage
       await query(`
-        INSERT INTO test_results (test_run_id, test_type, status, expected_value, actual_value, execution_time_ms)
-        VALUES ($1, $2, $3, $4, $5, $6)
-      `, [testRunId, 'File Validation', validationResult.stages.fileValidation.success ? 'passed' : 'failed', 'Valid file', validationResult.stages.fileValidation.success ? 'Found' : 'Invalid', validationResult.stages.fileValidation.duration || 0]);
+        INSERT INTO test_results (test_run_id, test_type, status, expected_value, actual_value, error_details, execution_time_ms)
+        VALUES ($1, $2, $3, $4, $5, $6, $7)
+      `, [testRunId, 'File Validation', validationResult.stages.fileValidation.success ? 'passed' : 'failed', 'Valid file', validationResult.stages.fileValidation.success ? 'Found' : 'Invalid', validationResult.stages.fileValidation.error || null, validationResult.stages.fileValidation.duration || 0]);
       
       // Store backup restore stage
       await query(`
-        INSERT INTO test_results (test_run_id, test_type, status, expected_value, actual_value, execution_time_ms)
-        VALUES ($1, $2, $3, $4, $5, $6)
-      `, [testRunId, 'Backup Restore', validationResult.stages.backupRestore.success ? 'passed' : 'failed', 'Successful restore', validationResult.stages.backupRestore.success ? `${validationResult.validationDetails.tablesCreated} tables created` : 'Failed', validationResult.stages.backupRestore.duration || 0]);
+        INSERT INTO test_results (test_run_id, test_type, status, expected_value, actual_value, error_details, execution_time_ms)
+        VALUES ($1, $2, $3, $4, $5, $6, $7)
+      `, [testRunId, 'Backup Restore', validationResult.stages.backupRestore.success ? 'passed' : 'failed', 'Successful restore', validationResult.stages.backupRestore.success ? `${validationResult.validationDetails.tablesCreated} tables created` : 'Failed', validationResult.stages.backupRestore.error || null, validationResult.stages.backupRestore.duration || 0]);
       
       // Store data validation stage
       await query(`
-        INSERT INTO test_results (test_run_id, test_type, status, expected_value, actual_value, execution_time_ms)
-        VALUES ($1, $2, $3, $4, $5, $6)
-      `, [testRunId, 'Data Validation', validationResult.stages.dataValidation.success ? 'passed' : 'failed', 'Valid data integrity', validationResult.stages.dataValidation.success ? `${validationResult.validationDetails.tablesFound || 0} tables validated` : 'Failed', validationResult.stages.dataValidation.duration || 0]);
+        INSERT INTO test_results (test_run_id, test_type, status, expected_value, actual_value, error_details, execution_time_ms)
+        VALUES ($1, $2, $3, $4, $5, $6, $7)
+      `, [testRunId, 'Data Validation', validationResult.stages.dataValidation.success ? 'passed' : 'failed', 'Valid data integrity', validationResult.stages.dataValidation.success ? `${validationResult.validationDetails.tablesFound || 0} tables validated` : 'Failed', validationResult.stages.dataValidation.error || null, validationResult.stages.dataValidation.duration || 0]);
 
       console.log(`✅ Validation completed: ${validationResult.success ? 'PASSED' : 'FAILED'}`);
       

@@ -330,11 +330,15 @@ router.get('/:id/report/json', authenticateToken, async (req, res, next) => {
           Math.round((testResults.rows.filter(r => r.status === 'passed').length / testResults.rows.length) * 100) : 0
       },
       results: testResults.rows.map(result => ({
-        checkName: result.check_name,
-        checkType: result.check_type,
+        checkName: result.test_type,
+        checkType: result.test_type,
         status: result.status,
-        details: result.details ? JSON.parse(result.details) : null,
-        errorMessage: result.error_message,
+        details: result.error_details ? {
+          expected: result.expected_value,
+          actual: result.actual_value,
+          error: result.error_details
+        } : null,
+        errorMessage: result.error_details,
         executionTime: result.execution_time_ms,
         timestamp: result.created_at
       })),
