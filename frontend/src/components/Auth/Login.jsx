@@ -1,7 +1,9 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './Auth.css';
 
 const Login = ({ onToggleAuth, onLogin }) => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -39,6 +41,7 @@ const Login = ({ onToggleAuth, onLogin }) => {
 
       localStorage.setItem('token', data.data.token);
       onLogin(data.data.user);
+      navigate('/database-backup-monitoring');
     } catch (err) {
       setError(err.message);
     } finally {

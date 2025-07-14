@@ -1,7 +1,9 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './Auth.css';
 
 const Register = ({ onToggleAuth, onLogin }) => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -43,7 +45,8 @@ const Register = ({ onToggleAuth, onLogin }) => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          name: formData.name,
+          firstName: formData.name.split(' ')[0] || formData.name,
+          lastName: formData.name.split(' ').slice(1).join(' ') || '',
           email: formData.email,
           password: formData.password
         }),
@@ -57,6 +60,7 @@ const Register = ({ onToggleAuth, onLogin }) => {
 
       localStorage.setItem('token', data.data.token);
       onLogin(data.data.user);
+      navigate('/database-backup-monitoring');
     } catch (err) {
       setError(err.message);
     } finally {
