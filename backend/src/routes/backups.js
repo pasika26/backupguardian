@@ -116,9 +116,36 @@ router.post('/upload', authenticateToken, upload.single('backup'), async (req, r
       await ResultStorage.updateTestRun(testRunId, {
         status: validationResult.success ? 'passed' : 'failed',
         completed_at: new Date(),
-        duration_seconds: Math.round((Date.now() - new Date()) / 1000),
+        duration_seconds: validationResult.stats?.duration ? Math.round(validationResult.stats.duration / 1000) : 0,
         error_message: validationResult.errors?.length > 0 ? validationResult.errors.join('; ') : null
       });
+
+      // Store detailed results for reporting
+      if (validationResult.checks) {
+        const { query } = require('../db');
+        const checks = validationResult.checks;
+        
+        // Store file validation
+        await query(`
+          INSERT INTO test_results (test_run_id, test_type, status, expected_value, actual_value, execution_time_ms)
+          VALUES ($1, $2, $3, $4, $5, $6)
+        `, [testRunId, 'File Validation', checks.fileExists ? 'passed' : 'failed', 'File exists', checks.fileExists ? 'Found' : 'Not found', 0]);
+        
+        // Store SQL syntax validation  
+        await query(`
+          INSERT INTO test_results (test_run_id, test_type, status, expected_value, actual_value, execution_time_ms)
+          VALUES ($1, $2, $3, $4, $5, $6)
+        `, [testRunId, 'SQL Syntax', checks.sqlSyntax ? 'passed' : 'failed', 'Valid SQL', checks.sqlSyntax ? 'Valid' : 'Invalid', 0]);
+        
+        // Store data validation if available
+        if (validationResult.validationDetails) {
+          const details = validationResult.validationDetails;
+          await query(`
+            INSERT INTO test_results (test_run_id, test_type, status, expected_value, actual_value, execution_time_ms)
+            VALUES ($1, $2, $3, $4, $5, $6)
+          `, [testRunId, 'Database Restore', validationResult.success ? 'passed' : 'failed', 'Successful restore', `${details.tablesCreated} tables created`, validationResult.stats?.duration || 0]);
+        }
+      }
 
       console.log(`✅ Validation completed: ${validationResult.success ? 'PASSED' : 'FAILED'}`);
       
