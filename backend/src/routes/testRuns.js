@@ -176,10 +176,28 @@ router.get('/:id', authenticateToken, async (req, res, next) => {
       ORDER BY created_at ASC
     `, [id]);
     
+    const testRun = testRuns.rows[0];
+    
+    // Map database fields to frontend expected format
+    const mappedTestRun = {
+      id: testRun.id,
+      filename: testRun.backup_file_name,
+      fileSize: null, // We'll need to add this to backups table
+      status: testRun.status,
+      createdAt: testRun.started_at,
+      completedAt: testRun.completed_at,
+      duration: testRun.duration_seconds,
+      test_database_name: testRun.test_database_name,
+      error_message: testRun.error_message,
+      result_count: testResults.rows.length,
+      backup_database_name: testRun.backup_database_name,
+      user_email: testRun.user_email
+    };
+    
     res.json({
       success: true,
       data: {
-        testRun: testRuns.rows[0],
+        testRun: mappedTestRun,
         testResults: testResults.rows
       }
     });

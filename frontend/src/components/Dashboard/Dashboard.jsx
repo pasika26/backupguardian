@@ -91,7 +91,7 @@ const Dashboard = ({ user, onNavigate }) => {
       
       if (response.ok) {
         const data = await response.json();
-        setSelectedTest(data.data);
+        setSelectedTest(data.data.testRun);
         setShowDetailsModal(true);
       } else {
         console.error('Failed to fetch test details');
