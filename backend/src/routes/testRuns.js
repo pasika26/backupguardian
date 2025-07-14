@@ -84,10 +84,7 @@ router.get('/', authenticateToken, async (req, res, next) => {
         tr.id,
         tr.backup_id,
         tr.user_id,
-        CASE tr.status 
-          WHEN 'completed' THEN 'passed'
-          ELSE tr.status 
-        END as status,
+        tr.status,
         tr.started_at as createdAt,
         tr.completed_at as completedAt,
         tr.duration_seconds as duration,
@@ -95,15 +92,13 @@ router.get('/', authenticateToken, async (req, res, next) => {
         tr.error_message,
         b.file_name as filename,
         b.file_size as fileSize,
-        u.email as user_email,
-        COUNT(tres.id) as result_count
+        u.email as user_email
       FROM test_runs tr
       JOIN backups b ON tr.backup_id = b.id
       JOIN users u ON tr.user_id = u.id
-      LEFT JOIN test_results tres ON tr.id = tres.test_run_id
       WHERE ${whereClause}
-      GROUP BY tr.id
       ORDER BY tr.started_at DESC
+      LIMIT 10
     `, params);
     
     res.json({
