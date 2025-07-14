@@ -127,7 +127,7 @@ router.get('/stats', authenticateToken, async (req, res, next) => {
   try {
     const stats = await Promise.all([
       query('SELECT COUNT(*) as count FROM test_runs WHERE user_id = $1', [req.user.id]),
-      query('SELECT COUNT(*) as count FROM test_runs WHERE user_id = $1 AND status = $2', [req.user.id, 'completed']),
+      query('SELECT COUNT(*) as count FROM test_runs WHERE user_id = $1 AND status = $2', [req.user.id, 'passed']),
       query('SELECT COUNT(*) as count FROM test_runs WHERE user_id = $1 AND status = $2', [req.user.id, 'failed']),
       query('SELECT COUNT(*) as count FROM test_runs WHERE user_id = $1 AND status = $2', [req.user.id, 'pending'])
     ]);
