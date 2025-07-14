@@ -247,15 +247,25 @@ class RailwayValidator {
       });
 
       childProcess.on('close', (code) => {
+        console.log(`🔍 pg_restore process completed with exit code: ${code}`);
+        console.log(`📊 stdout length: ${stdout.length}, stderr length: ${stderr.length}`);
+        
         if (code === 0) {
           console.log(`✅ Backup restored successfully to ${tempDbName}`);
           
-          // Parse output for statistics
-          const tableMatches = stdout.match(/CREATE TABLE/g);
-          const insertMatches = stdout.match(/INSERT/g);
-          
-          result.validationDetails.tablesCreated = tableMatches ? tableMatches.length : 0;
-          result.validationDetails.rowsInserted = insertMatches ? insertMatches.length : 0;
+          // Parse output for statistics (different for pg_restore vs psql)
+          if (result.fileInfo.type === 'sql') {
+            const tableMatches = stdout.match(/CREATE TABLE/g);
+            const insertMatches = stdout.match(/INSERT/g);
+            result.validationDetails.tablesCreated = tableMatches ? tableMatches.length : 0;
+            result.validationDetails.rowsInserted = insertMatches ? insertMatches.length : 0;
+          } else {
+            // For pg_restore, count "creating TABLE" messages
+            const tableMatches = stdout.match(/creating TABLE/g);
+            const sequenceMatches = stdout.match(/creating SEQUENCE/g);
+            result.validationDetails.tablesCreated = tableMatches ? tableMatches.length : 0;
+            result.validationDetails.sequencesCreated = sequenceMatches ? sequenceMatches.length : 0;
+          }
           
           resolve();
         } else {
