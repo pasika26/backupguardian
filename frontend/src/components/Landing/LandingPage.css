@@ -663,3 +663,41 @@ section h2 {
     gap: 1.5rem;
   }
 }
+
+.prevention-features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.prevention-item {
+  background: rgba(255, 255, 255, 0.9);
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  text-align: center;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.prevention-item h3 {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+  color: #2d3748;
+}
+
+.prevention-item p {
+  color: #4a5568;
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .prevention-features {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .prevention-item {
+    padding: 1rem;
+  }
+}

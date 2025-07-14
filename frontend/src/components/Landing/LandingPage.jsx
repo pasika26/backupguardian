@@ -44,11 +44,25 @@ function LandingPage() {
       {/* Real-Time Monitoring & Alerts */}
       <section className="why-section-compact">
         <div className="container">
-          <h2>Real-Time Monitoring & Alerts</h2>
+          <h2>How Backup Guardian Prevents Data Loss</h2>
           <p className="why-description">
             Get instant notifications when backups fail or succeed. Database backups fail silently — corrupt files, mismatched versions, or partial exports can leave you exposed. 
             Backup Guardian validates your PostgreSQL backups instantly, giving you confidence that your data is safe.
           </p>
+          <div className="prevention-features">
+            <div className="prevention-item">
+              <h3>🔍 Proactive Backup Validation</h3>
+              <p>Automatically detects corrupted or incomplete backups before disasters strike</p>
+            </div>
+            <div className="prevention-item">
+              <h3>⚡ Real-Time Failure Alerts</h3>
+              <p>Immediate notifications when backup processes fail or produce invalid files</p>
+            </div>
+            <div className="prevention-item">
+              <h3>🛡️ Continuous Data Protection</h3>
+              <p>Regular validation schedules ensure your backup strategy actually protects your data</p>
+            </div>
+          </div>
         </div>
       </section>
 

@@ -8,6 +8,8 @@ import DatabaseBackupMonitoring from './pages/DatabaseBackupMonitoring';
 import PostgreSQLBackupValidation from './pages/PostgreSQLBackupValidation';
 import BackupHistory from './pages/BackupHistory';
 import Features from './pages/Features';
+import FAQ from './pages/FAQ';
+import AdminDashboard from './components/Admin/AdminDashboard';
 import './App.css';
 
 // Navigation component for authenticated users
@@ -47,6 +49,12 @@ function Navigation({ user, onLogout }) {
             className={`nav-link ${location.pathname === '/features' ? 'active' : ''}`}
           >
             Features
+          </Link>
+          <Link 
+            to="/admin" 
+            className={`nav-link admin-link ${location.pathname === '/admin' ? 'active' : ''}`}
+          >
+            🔧 Admin
           </Link>
         </div>
 
@@ -118,6 +126,7 @@ function App() {
           {/* Public routes */}
           <Route path="/" element={<LandingPage />} />
           <Route path="/features" element={<Features />} />
+          <Route path="/faq" element={<FAQ />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/terms" element={<TermsOfUse />} />
           <Route path="/login" element={<AuthContainer onLogin={handleLogin} />} />
@@ -155,6 +164,19 @@ function App() {
                 <Navigation user={user} onLogout={handleLogout} />
                 <main className="app-main">
                   <BackupHistory />
+                </main>
+              </>
+            ) : (
+              <Navigate to="/login" />
+            )
+          } />
+          
+          <Route path="/admin" element={
+            user ? (
+              <>
+                <Navigation user={user} onLogout={handleLogout} />
+                <main className="app-main">
+                  <AdminDashboard />
                 </main>
               </>
             ) : (
