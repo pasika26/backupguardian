@@ -211,10 +211,12 @@ class RailwayValidator {
         // Use psql for SQL files
         command = 'psql';
         args = [tempDbUrl, '-f', backupFilePath];
-      } else {
-        // Use pg_restore for dump files
+      } else if (result.fileInfo.type === 'pg_backup' || result.fileInfo.type === 'pg_dump') {
+        // Use pg_restore for backup/dump files
         command = 'pg_restore';
         args = ['-d', tempDbUrl, '--verbose', backupFilePath];
+      } else {
+        throw new Error(`Unsupported file type: ${result.fileInfo.type}`);
       }
 
       const childProcess = spawn(command, args);
