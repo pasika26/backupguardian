@@ -9,6 +9,9 @@ import PostgreSQLBackupValidation from './pages/PostgreSQLBackupValidation';
 import BackupHistory from './pages/BackupHistory';
 import Features from './pages/Features';
 import FAQ from './pages/FAQ';
+import Documentation from './pages/Documentation';
+import CLI from './pages/CLI';
+import Contact from './pages/Contact';
 import AdminDashboard from './components/Admin/AdminDashboard';
 import './App.css';
 
@@ -127,6 +130,9 @@ function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/features" element={<Features />} />
           <Route path="/faq" element={<FAQ />} />
+          <Route path="/docs" element={<Documentation />} />
+          <Route path="/cli" element={<CLI />} />
+          <Route path="/contact" element={<Contact />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/terms" element={<TermsOfUse />} />
           <Route path="/login" element={<AuthContainer onLogin={handleLogin} />} />

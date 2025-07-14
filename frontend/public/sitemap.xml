@@ -49,6 +49,27 @@
     <priority>0.8</priority>
   </url>
   
+  <url>
+    <loc>https://www.backupguardian.org/docs</loc>
+    <lastmod>2025-07-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.backupguardian.org/cli</loc>
+    <lastmod>2025-07-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.backupguardian.org/contact</loc>
+    <lastmod>2025-07-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
   <!-- Legal Pages -->
   <url>
     <loc>https://www.backupguardian.org/terms</loc>

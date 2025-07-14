@@ -1,0 +1,341 @@
+.cli-page {
+  min-height: 100vh;
+  background: #0f172a;
+  color: #e2e8f0;
+  padding: 2rem 0;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.cli-header {
+  text-align: center;
+  margin-bottom: 4rem;
+  padding: 3rem 0;
+}
+
+.terminal-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+.cli-header h1 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #10b981 0%, #3b82f6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.cli-header p {
+  font-size: 1.3rem;
+  opacity: 0.8;
+}
+
+.installation-section,
+.usage-section,
+.cicd-section,
+.commands-section,
+.options-section {
+  margin-bottom: 4rem;
+}
+
+.installation-section h2,
+.usage-section h2,
+.cicd-section h2,
+.commands-section h2,
+.options-section h2 {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  color: #10b981;
+  text-align: center;
+}
+
+.install-commands {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.install-method {
+  background: #1e293b;
+  padding: 2rem;
+  border-radius: 1rem;
+  border: 1px solid #334155;
+}
+
+.install-method h3 {
+  color: #10b981;
+  margin-bottom: 1rem;
+  font-size: 1.3rem;
+}
+
+.code-block {
+  background: #000;
+  border: 1px solid #334155;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  position: relative;
+  margin: 1rem 0;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  overflow-x: auto;
+}
+
+.code-block code {
+  color: #10b981;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  white-space: pre;
+}
+
+.copy-btn {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: #334155;
+  border: none;
+  color: #e2e8f0;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: background-color 0.2s;
+}
+
+.copy-btn:hover {
+  background: #475569;
+}
+
+.download-links {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.download-btn {
+  background: #10b981;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  text-decoration: none;
+  font-weight: 600;
+  transition: background-color 0.2s;
+}
+
+.download-btn:hover {
+  background: #059669;
+}
+
+.command-examples {
+  display: grid;
+  gap: 2rem;
+}
+
+.command-group {
+  background: #1e293b;
+  padding: 2rem;
+  border-radius: 1rem;
+  border: 1px solid #334155;
+}
+
+.command-group h3 {
+  color: #10b981;
+  margin-bottom: 1rem;
+  font-size: 1.3rem;
+}
+
+.command-group p {
+  opacity: 0.8;
+  margin-top: 1rem;
+  line-height: 1.6;
+}
+
+.integration-examples {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 2rem;
+}
+
+.integration-card {
+  background: #1e293b;
+  padding: 2rem;
+  border-radius: 1rem;
+  border: 1px solid #334155;
+}
+
+.integration-card h3 {
+  color: #3b82f6;
+  margin-bottom: 1rem;
+  font-size: 1.3rem;
+}
+
+.commands-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.command-card {
+  background: #1e293b;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  border: 1px solid #334155;
+}
+
+.command-card h4 {
+  color: #10b981;
+  margin-bottom: 0.5rem;
+  font-size: 1.2rem;
+}
+
+.command-card p {
+  opacity: 0.8;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+.command-card code {
+  background: #000;
+  color: #10b981;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.85rem;
+  display: block;
+}
+
+.options-table {
+  background: #1e293b;
+  border-radius: 1rem;
+  overflow: hidden;
+  border: 1px solid #334155;
+}
+
+.options-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.options-table th {
+  background: #10b981;
+  color: white;
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+}
+
+.options-table td {
+  padding: 1rem;
+  border-bottom: 1px solid #334155;
+}
+
+.options-table tr:last-child td {
+  border-bottom: none;
+}
+
+.options-table code {
+  background: #000;
+  color: #10b981;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.85rem;
+}
+
+.cli-cta {
+  text-align: center;
+  background: linear-gradient(135deg, #10b981 0%, #3b82f6 100%);
+  padding: 3rem;
+  border-radius: 1rem;
+  margin-top: 4rem;
+}
+
+.cli-cta h2 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  font-weight: 700;
+}
+
+.cli-cta p {
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+  opacity: 0.9;
+}
+
+.cta-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.cta-button {
+  display: inline-block;
+  padding: 1rem 2rem;
+  border-radius: 0.5rem;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+}
+
+.cta-button.primary {
+  background: white;
+  color: #10b981;
+}
+
+.cta-button.primary:hover {
+  background: #f8f9fa;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.cta-button.secondary {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 2px solid white;
+}
+
+.cta-button.secondary:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+  .cli-header h1 {
+    font-size: 2rem;
+  }
+  
+  .install-commands {
+    grid-template-columns: 1fr;
+  }
+  
+  .integration-examples {
+    grid-template-columns: 1fr;
+  }
+  
+  .commands-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .cli-cta {
+    padding: 2rem;
+  }
+  
+  .cta-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .cta-button {
+    width: 200px;
+  }
+  
+  .options-table {
+    overflow-x: auto;
+  }
+}

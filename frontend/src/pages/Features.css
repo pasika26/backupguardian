@@ -35,12 +35,13 @@
 }
 
 .feature-card {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 1rem;
   padding: 2rem;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 .feature-card:hover {
@@ -51,12 +52,12 @@
 .feature-card h2 {
   font-size: 1.5rem;
   margin-bottom: 1rem;
-  color: #fff;
+  color: #2d3748;
 }
 
 .feature-card p {
   margin-bottom: 1.5rem;
-  opacity: 0.9;
+  color: #4a5568;
   line-height: 1.6;
 }
 
@@ -69,7 +70,7 @@
   padding: 0.5rem 0;
   padding-left: 1.5rem;
   position: relative;
-  opacity: 0.9;
+  color: #4a5568;
 }
 
 .feature-card li::before {
