@@ -126,6 +126,17 @@ class RailwayValidator {
         return step;
       }
 
+      // Check if this is a PostgreSQL binary dump file
+      const buffer = fs.readFileSync(filePath);
+      const firstBytes = buffer.subarray(0, 100).toString('ascii', 0, 20);
+      
+      if (firstBytes.includes('PGDMP') || filename.endsWith('.backup') || filename.endsWith('.dump')) {
+        // This is a PostgreSQL custom format dump - skip text parsing
+        step.passed = true;
+        step.warnings.push('PostgreSQL binary dump detected - text validation skipped');
+        return step;
+      }
+
       // Check if file is effectively empty (only whitespace)
       const content = fs.readFileSync(filePath, 'utf8');
       if (content.trim().length === 0) {
@@ -381,7 +392,16 @@ class RailwayValidator {
     let inString = false;
     let stringChar = null;
     
+    // Add timeout protection
+    const startTime = Date.now();
+    const timeoutMs = 30000; // 30 seconds
+    
     for (let i = 0; i < lines.length; i++) {
+      // Check for timeout every 1000 lines
+      if (i % 1000 === 0 && Date.now() - startTime > timeoutMs) {
+        errors.push('Validation timeout: File too complex or large to process');
+        break;
+      }
       const line = lines[i];
       const lineNum = i + 1;
       const trimmed = line.trim();
