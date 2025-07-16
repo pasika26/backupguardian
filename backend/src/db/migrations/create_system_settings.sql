@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS system_settings (
     category VARCHAR(100) NOT NULL,
     is_editable BOOLEAN DEFAULT true,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_by INTEGER REFERENCES users(id)
+    updated_by INTEGER -- Removed foreign key constraint for production compatibility
 );
 
 -- Create index for faster lookups
