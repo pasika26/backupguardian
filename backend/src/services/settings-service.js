@@ -93,10 +93,49 @@ class SettingsService {
       }
       
       this.lastCacheUpdate = Date.now();
+      console.log(`✅ Settings cache refreshed with ${result.rows.length} settings`);
     } catch (error) {
       console.error('Failed to refresh settings cache:', error);
+      
+      // Defensive: Check if it's missing table error
+      if (error.code === '42P01' && error.message.includes('system_settings')) {
+        console.warn('⚠️  system_settings table missing - using fallback defaults');
+        this.loadFallbackDefaults();
+        return;
+      }
+      
       throw error;
     }
+  }
+
+  /**
+   * Load fallback defaults when database table is missing
+   */
+  loadFallbackDefaults() {
+    console.log('📋 Loading fallback default settings...');
+    
+    const fallbackSettings = [
+      { setting_key: 'max_file_size_mb', setting_value: '500', setting_type: 'number', category: 'file_upload' },
+      { setting_key: 'allowed_file_types', setting_value: '["sql", "dump", "backup", "tar", "gz", "zip"]', setting_type: 'json', category: 'file_upload' },
+      { setting_key: 'storage_cleanup_days', setting_value: '30', setting_type: 'number', category: 'file_upload' },
+      { setting_key: 'test_timeout_minutes', setting_value: '15', setting_type: 'number', category: 'test_execution' },
+      { setting_key: 'max_concurrent_tests', setting_value: '3', setting_type: 'number', category: 'test_execution' },
+      { setting_key: 'docker_container_timeout', setting_value: '10', setting_type: 'number', category: 'test_execution' },
+      { setting_key: 'cleanup_temp_files_hours', setting_value: '24', setting_type: 'number', category: 'database_cleanup' },
+      { setting_key: 'cleanup_failed_tests_days', setting_value: '7', setting_type: 'number', category: 'database_cleanup' },
+      { setting_key: 'cleanup_logs_days', setting_value: '14', setting_type: 'number', category: 'database_cleanup' },
+      { setting_key: 'session_timeout_hours', setting_value: '24', setting_type: 'number', category: 'security' },
+      { setting_key: 'rate_limit_per_minute', setting_value: '60', setting_type: 'number', category: 'security' },
+      { setting_key: 'system_version', setting_value: '1.0.0', setting_type: 'string', category: 'system' }
+    ];
+
+    this.cache.clear();
+    for (const setting of fallbackSettings) {
+      this.cache.set(setting.setting_key, setting);
+    }
+    
+    this.lastCacheUpdate = Date.now();
+    console.log(`✅ Loaded ${fallbackSettings.length} fallback settings`);
   }
 
   /**
