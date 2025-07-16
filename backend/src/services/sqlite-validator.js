@@ -1,23 +1,24 @@
 const fs = require('fs');
 const path = require('path');
+const { spawn } = require('child_process');
 
 /**
- * Railway production validator using enhanced file-based validation
- * Matches SQLite validator logic but adapted for production environment
+ * SQLite-compatible SQL validator with proper syntax checking
+ * Uses SQLite command line to validate SQL syntax and structure
  */
-class RailwayValidator {
+class SQLiteValidator {
   constructor() {
-    this.validateId = `railway_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`;
+    this.validateId = `sqlite_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`;
   }
 
   /**
-   * Validate backup file using enhanced structural validation for production
+   * Validate backup file using SQLite syntax checking
    * @param {string} filePath - Path to backup file
    * @param {string} filename - Original filename
    * @returns {Promise<Object>} Validation result
    */
   async validateBackup(filePath, filename) {
-    console.log(`🔄 Starting Railway validation ${this.validateId} for file: ${filename}`);
+    console.log(`🔄 Starting SQLite validation ${this.validateId} for file: ${filename}`);
     
     const startTime = Date.now();
     let validationResult = {
@@ -28,7 +29,7 @@ class RailwayValidator {
       duration: 0,
       stages: {
         fileValidation: { success: false, duration: 0, error: null },
-        tempDbCreation: { success: true, duration: 0, error: null }, // File-based validation doesn't need temp DB
+        tempDbCreation: { success: true, duration: 0, error: null }, // SQLite doesn't need temp DB
         backupRestore: { success: false, duration: 0, error: null },
         dataValidation: { success: false, duration: 0, error: null },
         cleanup: { success: true, duration: 0, error: null } // No cleanup needed
@@ -95,10 +96,10 @@ class RailwayValidator {
 
       // If we get here, validation passed
       validationResult.success = true;
-      console.log(`✅ Railway validation ${this.validateId} passed`);
+      console.log(`✅ SQLite validation ${this.validateId} passed`);
 
     } catch (error) {
-      console.error(`❌ Railway validation ${this.validateId} failed:`, error.message);
+      console.error(`❌ SQLite validation ${this.validateId} failed:`, error.message);
       validationResult.stages.fileValidation.error = error.message;
       validationResult.validationDetails.errorsFound.push(error.message);
     }
@@ -583,9 +584,9 @@ class RailwayValidator {
     result.endTime = new Date();
     
     if (result.success) {
-      console.log(`✅ Railway validation ${this.validateId} completed successfully in ${result.duration}ms`);
+      console.log(`✅ SQLite validation ${this.validateId} completed successfully in ${result.duration}ms`);
     } else {
-      console.log(`❌ Railway validation ${this.validateId} failed in ${result.duration}ms`);
+      console.log(`❌ SQLite validation ${this.validateId} failed in ${result.duration}ms`);
       console.log('Errors:', result.validationDetails.errorsFound);
     }
 
@@ -593,4 +594,4 @@ class RailwayValidator {
   }
 }
 
-module.exports = RailwayValidator;
+module.exports = SQLiteValidator;

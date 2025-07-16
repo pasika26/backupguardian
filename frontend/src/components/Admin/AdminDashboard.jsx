@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import SystemSettings from './SystemSettings';
 import './AdminDashboard.css';
 
 const AdminDashboard = () => {
@@ -7,6 +8,7 @@ const AdminDashboard = () => {
   const [activity, setActivity] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
+  const [userActions, setUserActions] = useState({});
 
   useEffect(() => {
     fetchAdminData();
@@ -53,6 +55,68 @@ const AdminDashboard = () => {
     });
   };
 
+  const toggleUserStatus = async (userId, currentStatus) => {
+    setUserActions(prev => ({ ...prev, [userId]: 'toggling' }));
+    
+    try {
+      const token = localStorage.getItem('token');
+      const baseUrl = import.meta.env.VITE_API_URL || 'https://backupguardian-production.up.railway.app';
+      
+      const response = await fetch(`${baseUrl}/api/admin/users/${userId}/toggle-active`, {
+        method: 'PUT',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+
+      if (response.ok) {
+        // Refresh users data
+        await fetchAdminData();
+        setUserActions(prev => ({ ...prev, [userId]: null }));
+      } else {
+        throw new Error('Failed to toggle user status');
+      }
+    } catch (error) {
+      console.error('Error toggling user status:', error);
+      setUserActions(prev => ({ ...prev, [userId]: 'error' }));
+      setTimeout(() => {
+        setUserActions(prev => ({ ...prev, [userId]: null }));
+      }, 3000);
+    }
+  };
+
+  const deleteUser = async (userId) => {
+    if (!confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
+      return;
+    }
+
+    setUserActions(prev => ({ ...prev, [userId]: 'deleting' }));
+    
+    try {
+      const token = localStorage.getItem('token');
+      const baseUrl = import.meta.env.VITE_API_URL || 'https://backupguardian-production.up.railway.app';
+      
+      const response = await fetch(`${baseUrl}/api/admin/users/${userId}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+
+      if (response.ok) {
+        // Refresh users data
+        await fetchAdminData();
+        setUserActions(prev => ({ ...prev, [userId]: null }));
+      } else {
+        const error = await response.json();
+        throw new Error(error.message || 'Failed to delete user');
+      }
+    } catch (error) {
+      console.error('Error deleting user:', error);
+      alert(`Error deleting user: ${error.message}`);
+      setUserActions(prev => ({ ...prev, [userId]: 'error' }));
+      setTimeout(() => {
+        setUserActions(prev => ({ ...prev, [userId]: null }));
+      }, 3000);
+    }
+  };
+
   if (loading) {
     return <div className="admin-loading">Loading admin dashboard...</div>;
   }
@@ -82,6 +146,12 @@ const AdminDashboard = () => {
           onClick={() => setActiveTab('activity')}
         >
           Activity
+        </button>
+        <button 
+          className={`tab ${activeTab === 'settings' ? 'active' : ''}`}
+          onClick={() => setActiveTab('settings')}
+        >
+          Settings
         </button>
       </div>
 
@@ -141,6 +211,7 @@ const AdminDashboard = () => {
                   <th>Backups</th>
                   <th>Tests</th>
                   <th>Last Activity</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -152,6 +223,37 @@ const AdminDashboard = () => {
                     <td>{user.backupCount}</td>
                     <td>{user.testCount}</td>
                     <td>{formatDate(user.lastUpload || user.lastTest)}</td>
+                    <td>
+                      <div className="user-actions">
+                        {userActions[user.id] === 'toggling' ? (
+                          <span className="action-loading">⟳</span>
+                        ) : (
+                          <button
+                            className={`action-btn ${user.isActive ? 'deactivate' : 'activate'}`}
+                            onClick={() => toggleUserStatus(user.id, user.isActive)}
+                            title={user.isActive ? 'Deactivate user' : 'Activate user'}
+                          >
+                            {user.isActive ? '🚫' : '✅'}
+                          </button>
+                        )}
+                        
+                        {userActions[user.id] === 'deleting' ? (
+                          <span className="action-loading">⟳</span>
+                        ) : (
+                          <button
+                            className="action-btn delete"
+                            onClick={() => deleteUser(user.id)}
+                            title="Delete user"
+                          >
+                            🗑️
+                          </button>
+                        )}
+                        
+                        {userActions[user.id] === 'error' && (
+                          <span className="action-error">❌</span>
+                        )}
+                      </div>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -180,6 +282,10 @@ const AdminDashboard = () => {
             ))}
           </div>
         </div>
+      )}
+
+      {activeTab === 'settings' && (
+        <SystemSettings />
       )}
     </div>
   );

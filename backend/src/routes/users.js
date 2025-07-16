@@ -87,7 +87,7 @@ router.post('/login', async (req, res, next) => {
     
     // Find user
     const users = await query(
-      'SELECT id, email, password_hash, first_name, last_name, is_active, email_verified FROM users WHERE email = $1',
+      'SELECT id, email, password_hash, first_name, last_name, is_active, email_verified, is_admin FROM users WHERE email = $1',
       [email]
     );
     
@@ -119,7 +119,7 @@ router.post('/login', async (req, res, next) => {
     
     // Generate JWT
     const token = jwt.sign(
-      { userId: user.id, email: user.email },
+      { userId: user.id, email: user.email, isAdmin: user.is_admin },
       process.env.JWT_SECRET,
       { expiresIn: '7d' }
     );
@@ -133,7 +133,8 @@ router.post('/login', async (req, res, next) => {
           email: user.email,
           firstName: user.first_name,
           lastName: user.last_name,
-          emailVerified: Boolean(user.email_verified)
+          emailVerified: Boolean(user.email_verified),
+          isAdmin: Boolean(user.is_admin)
         },
         token
       }

@@ -1,5 +1,6 @@
 const { exec } = require('child_process');
 const { promisify } = require('util');
+const settingsService = require('./settings-service');
 
 const execAsync = promisify(exec);
 
@@ -67,7 +68,16 @@ class DockerRunner {
    * Wait for PostgreSQL container to be ready
    * @param {string} containerName 
    */
-  async waitForContainer(containerName, maxAttempts = 30) {
+  async waitForContainer(containerName, maxAttempts = null) {
+    if (maxAttempts === null) {
+      try {
+        const timeoutMinutes = await settingsService.getDockerTimeout();
+        maxAttempts = Math.floor((timeoutMinutes * 60) / 2); // 2 second intervals
+      } catch (error) {
+        console.warn('Failed to get Docker timeout setting, using default:', error);
+        maxAttempts = 30; // 1 minute default
+      }
+    }
     for (let i = 0; i < maxAttempts; i++) {
       try {
         const { stdout } = await execAsync(

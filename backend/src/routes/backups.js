@@ -7,6 +7,7 @@ const { authenticateToken } = require('../middleware/auth');
 const ResultStorage = require('../services/result-storage');
 const StorageService = require('../services/storage-service');
 const RailwayValidator = require('../services/railway-validator');
+const settingsService = require('../services/settings-service');
 const router = express.Router();
 
 // Configure multer for file uploads
@@ -28,33 +29,79 @@ const storage = multer.diskStorage({
   }
 });
 
-const fileFilter = (req, file, cb) => {
-  // Accept .sql, .dump, and .backup files
-  const allowedExtensions = ['.sql', '.dump', '.backup'];
-  const ext = path.extname(file.originalname).toLowerCase();
-  
-  if (allowedExtensions.includes(ext)) {
-    cb(null, true);
-  } else {
-    const error = new Error(`Invalid file type. Only ${allowedExtensions.join(', ')} files are allowed`);
-    error.statusCode = 400;
-    cb(error);
+// Create file filter function with settings
+const createFileFilter = async () => {
+  let allowedTypes;
+  try {
+    allowedTypes = await settingsService.getAllowedFileTypes();
+  } catch (error) {
+    console.warn('Failed to get allowed file types from settings, using defaults:', error);
+    allowedTypes = ['sql', 'dump', 'backup']; // defaults
   }
+  
+  return (req, file, cb) => {
+    const ext = path.extname(file.originalname).toLowerCase().substring(1); // Remove the dot
+    
+    if (allowedTypes.includes(ext)) {
+      cb(null, true);
+    } else {
+      const error = new Error(`Invalid file type. Only ${allowedTypes.map(t => '.' + t).join(', ')} files are allowed`);
+      error.statusCode = 400;
+      cb(error);
+    }
+  };
 };
 
-const upload = multer({
-  storage,
-  fileFilter,
-  limits: {
-    fileSize: 100 * 1024 * 1024 // 100MB limit
+// Create dynamic multer configuration
+const createUploadMiddleware = async () => {
+  try {
+    const [maxFileSize, fileFilter] = await Promise.all([
+      settingsService.getMaxFileSize(),
+      createFileFilter()
+    ]);
+    
+    return multer({
+      storage,
+      fileFilter,
+      limits: {
+        fileSize: maxFileSize * 1024 * 1024 // Convert MB to bytes
+      }
+    });
+  } catch (error) {
+    console.warn('Failed to get settings, using defaults:', error);
+    const defaultFileFilter = await createFileFilter(); // This will use defaults
+    return multer({
+      storage,
+      fileFilter: defaultFileFilter,
+      limits: {
+        fileSize: 100 * 1024 * 1024 // 100MB default
+      }
+    });
   }
-});
+};
 
 /**
  * Upload backup file
  * POST /api/backups/upload
  */
-router.post('/upload', authenticateToken, upload.single('backup'), async (req, res, next) => {
+router.post('/upload', authenticateToken, async (req, res, next) => {
+  // Create upload middleware with current settings
+  const upload = await createUploadMiddleware();
+  
+  // Use the middleware
+  upload.single('backup')(req, res, async (err) => {
+    if (err) {
+      if (err.code === 'LIMIT_FILE_SIZE') {
+        const maxSize = await settingsService.getMaxFileSize().catch(() => 100);
+        return res.status(400).json({
+          success: false,
+          message: `File too large. Maximum size is ${maxSize}MB`
+        });
+      }
+      return next(err);
+    }
+    
+    // Continue with upload logic
   try {
     if (!req.file) {
       return res.status(400).json({
@@ -101,16 +148,27 @@ router.post('/upload', authenticateToken, upload.single('backup'), async (req, r
     // Run direct validation
     console.log('🔄 Starting backup validation...');
     
+    // Initialize validation result
+    let validationResult = null;
+    
     try {
       // Update test run to running
       await ResultStorage.updateTestRun(testRunId, {
         status: 'running',
         started_at: new Date()
       });
-
-      // Run validation directly (no queue)
-      const validator = new RailwayValidator();
-      const validationResult = await validator.validateBackup(req.file.path, req.file.originalname);
+      
+      // Use proper SQL validation regardless of environment
+      if (process.env.USE_POSTGRESQL === 'true') {
+        // Use PostgreSQL validator for actual PostgreSQL databases
+        const validator = new RailwayValidator();
+        validationResult = await validator.validateBackup(req.file.path, req.file.originalname);
+      } else {
+        // For SQLite environments, use SQLite-compatible SQL validator
+        const SQLiteValidator = require('../services/sqlite-validator');
+        const validator = new SQLiteValidator();
+        validationResult = await validator.validateBackup(req.file.path, req.file.originalname);
+      }
       
       // Update test run with results
       await ResultStorage.updateTestRun(testRunId, {
@@ -155,24 +213,39 @@ router.post('/upload', authenticateToken, upload.single('backup'), async (req, r
       });
     }
     
+    const responseMessage = validationResult && validationResult.success ? 
+      'Backup uploaded and validated successfully!' : 
+      'Backup uploaded but validation failed!';
+    
+    const responseData = {
+      backup: {
+        id: backupId,
+        fileName: req.file.originalname,
+        fileSize: req.file.size,
+        fileType,
+        databaseName,
+        description,
+        uploadDate: new Date().toISOString()
+      },
+      testRun: {
+        id: testRunId,
+        status: validationResult && validationResult.success ? 'passed' : 'failed'
+      }
+    };
+    
+    // Add validation details if available
+    if (validationResult) {
+      responseData.validation = {
+        success: validationResult.success,
+        errors: validationResult.validationDetails.errorsFound,
+        warnings: validationResult.validationDetails.warningsFound
+      };
+    }
+    
     res.status(201).json({
       success: true,
-      message: 'Backup uploaded and validated successfully!',
-      data: {
-        backup: {
-          id: backupId,
-          fileName: req.file.originalname,
-          fileSize: req.file.size,
-          fileType,
-          databaseName,
-          description,
-          uploadDate: new Date().toISOString()
-        },
-        testRun: {
-          id: testRunId,
-          status: 'pending'
-        }
-      }
+      message: responseMessage,
+      data: responseData
     });
     
   } catch (error) {
@@ -186,6 +259,7 @@ router.post('/upload', authenticateToken, upload.single('backup'), async (req, r
     }
     next(error);
   }
+  });
 });
 
 /**

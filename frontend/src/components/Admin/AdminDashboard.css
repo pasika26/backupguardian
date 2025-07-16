@@ -243,6 +243,84 @@
   color: #856404;
 }
 
+/* User Actions */
+.user-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+}
+
+.action-btn {
+  background: none;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 6px 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  min-width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.action-btn:hover {
+  background-color: #f8f9fa;
+  border-color: #adb5bd;
+}
+
+.action-btn.activate {
+  border-color: #28a745;
+  color: #28a745;
+}
+
+.action-btn.activate:hover {
+  background-color: #28a745;
+  color: white;
+}
+
+.action-btn.deactivate {
+  border-color: #ffc107;
+  color: #ffc107;
+}
+
+.action-btn.deactivate:hover {
+  background-color: #ffc107;
+  color: white;
+}
+
+.action-btn.delete {
+  border-color: #dc3545;
+  color: #dc3545;
+}
+
+.action-btn.delete:hover {
+  background-color: #dc3545;
+  color: white;
+}
+
+.action-loading {
+  color: #6c757d;
+  animation: spin-action 1s linear infinite;
+  font-size: 1rem;
+}
+
+.action-error {
+  color: #dc3545;
+  font-size: 1rem;
+}
+
+@keyframes spin-action {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 @media (max-width: 768px) {
   .admin-dashboard {
     padding: 10px;

@@ -1,5 +1,6 @@
 const DockerRunner = require('./docker-runner');
 const ResultStorage = require('./result-storage');
+const settingsService = require('./settings-service');
 
 /**
  * Service responsible for cleaning up resources after backup validation
@@ -97,7 +98,15 @@ class CleanupService {
       const { promisify } = require('util');
       const execAsync = promisify(exec);
 
-      // Find backup-guardian test containers older than 1 hour
+      // Get cleanup timeout from settings
+      let cleanupHours = 1; // default
+      try {
+        cleanupHours = await settingsService.getSetting('cleanup_temp_files_hours');
+      } catch (error) {
+        console.warn('Failed to get cleanup timeout from settings, using default:', error);
+      }
+
+      // Find backup-guardian test containers older than specified hours
       const findCommand = [
         'docker ps',
         '--filter "name=backup-guardian-test"',
@@ -108,13 +117,13 @@ class CleanupService {
       const { stdout } = await execAsync(findCommand);
       const containers = stdout.trim().split('\n').filter(line => line);
 
-      const oneHourAgo = Date.now() - (60 * 60 * 1000);
+      const cleanupThreshold = Date.now() - (cleanupHours * 60 * 60 * 1000);
 
       for (const containerLine of containers) {
         const [containerName, createdAt] = containerLine.split(' ', 2);
         const createdTime = new Date(createdAt).getTime();
 
-        if (createdTime < oneHourAgo) {
+        if (createdTime < cleanupThreshold) {
           console.log(`🚨 Found orphaned container: ${containerName} (created ${createdAt})`);
           await this.cleanupContainer(containerName, result);
         }

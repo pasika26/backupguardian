@@ -1,0 +1,31 @@
+--
+-- PostgreSQL database dump
+--
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+
+CREATE TABLE users (
+    id integer NOT NULL,
+    username character varying(50) NOT NULL,
+    email character varying(100) NOT NULL
+);
+
+-- Backup cuts off mid-statement
+CREATE TABLE products (
+    id integer NOT NULL,
+    name character varying(100) NOT NULL,
+    price numeric(10,2) NOT NULL,
+    user_id integer
+);
+
+INSERT INTO users VALUES (1, 'john', 'john@example.com');
+INSERT INTO users VALUES (2, 'jane', 'jane@example.com');
+
+INSERT INTO products VALUES (1, 'Product 1', 19.99, 1);
+INSERT INTO products VALUES (2, 'Product 2', 29.99, 2);
+
+-- Backup ends abruptly without proper closing
+ALTER TABLE products ADD CONSTRAINT fk_user

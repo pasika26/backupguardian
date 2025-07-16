@@ -1,0 +1,10 @@
+This is not a database backup file.
+It's just a plain text file with .txt extension.
+Should fail format validation.
+
+Some random content:
+- Line 1
+- Line 2  
+- Line 3
+
+This file has no SQL commands or database structure.

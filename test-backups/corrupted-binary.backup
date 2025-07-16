@@ -1,0 +1,6 @@
+PGDMP����������������������
+corrupted binary data that looks like pg_dump but isn't valid
+Random bytes: ���������������������������������
+This should fail binary validation
+INVALID_HEADER_DATA_123456789
+More corrupt data: ����������������������
