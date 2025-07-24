@@ -1,5 +1,6 @@
 const chalk = require('chalk');
 const ora = require('ora');
+const analytics = require('../utils/analytics');
 
 module.exports = (program) => {
   program
@@ -8,7 +9,26 @@ module.exports = (program) => {
     .argument('<file>', 'Path to the backup file to demo')
     .option('--json', 'Output results in JSON format', false)
     .action(async (file, options) => {
-      await runDemo(file, options);
+      const startTime = Date.now();
+      
+      try {
+        await runDemo(file, options);
+        
+        // Track analytics
+        await analytics.track('demo_command', {
+          success: true,
+          duration: Date.now() - startTime,
+          fileType: require('path').extname(file).toLowerCase(),
+          jsonOutput: options.json
+        });
+      } catch (error) {
+        await analytics.track('demo_command', {
+          success: false,
+          duration: Date.now() - startTime,
+          error: error.message.substring(0, 100)
+        });
+        throw error;
+      }
     });
 };
 

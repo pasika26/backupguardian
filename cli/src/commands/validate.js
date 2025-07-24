@@ -4,6 +4,7 @@ const chalk = require('chalk');
 const ora = require('ora');
 const Table = require('cli-table3');
 const { exec } = require('child_process');
+const analytics = require('../utils/analytics');
 
 // Import validation services from backend and CLI
 const RailwayValidator = require('../../../backend/src/services/railway-validator');
@@ -21,11 +22,31 @@ module.exports = (program) => {
     .option('--json', 'Output results in JSON format', false)
     .option('--verbose', 'Enable verbose output', false)
     .action(async (file, options) => {
+      const startTime = Date.now();
+      let success = false;
+      let error = null;
+      
       try {
         await validateBackup(file, options);
-      } catch (error) {
-        console.error(chalk.red('Validation failed:'), error.message);
+        success = true;
+      } catch (err) {
+        error = err.message;
+        console.error(chalk.red('Validation failed:'), err.message);
         process.exit(1);
+      } finally {
+        // Track analytics
+        await analytics.track('validate_command', {
+          success,
+          duration: Date.now() - startTime,
+          fileType: path.extname(file).toLowerCase(),
+          options: {
+            schemaCheck: options.schemaCheck,
+            dataCheck: options.dataCheck,
+            jsonOutput: options.json,
+            verbose: options.verbose
+          },
+          error: error ? error.substring(0, 100) : null // Truncate error for privacy
+        });
       }
     });
 };

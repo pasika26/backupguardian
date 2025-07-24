@@ -14,6 +14,7 @@ const testRunRoutes = require('./routes/testRuns');
 const healthRoutes = require('./routes/health');
 const adminRoutes = require('./routes/admin');
 const settingsRoutes = require('./routes/settings');
+const analyticsRoutes = require('./routes/analytics');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -57,6 +58,7 @@ app.use('/api/backups', backupRoutes);
 app.use('/api/test-runs', testRunRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/settings', settingsRoutes);
+app.use('/api/analytics', analyticsRoutes);
 
 // 404 handler
 app.use('*', (req, res) => {
