@@ -49,7 +49,7 @@ Go to Railway Dashboard → Your Project → `backupguardian` service → Variab
 NODE_ENV=production
 PORT=8080
 JWT_SECRET=your-long-secure-random-string-here
-FRONTEND_URL=https://backupguardian.vercel.app
+FRONTEND_URL=https://www.backupguardian.org
 DATABASE_URL=postgresql://[railway-auto-provides-this]
 REDIS_URL=redis://[railway-auto-provides-this]
 ```
@@ -104,7 +104,7 @@ vercel --prod
 ```
 
 ### Test Frontend
-Visit: https://backupguardian.vercel.app
+Visit: https://www.backupguardian.org
 
 ---
 
@@ -175,7 +175,7 @@ cd frontend && vercel --prod
 
 # Check everything is working
 curl https://backupguardian-production.up.railway.app/health
-curl -I https://backupguardian.vercel.app
+curl -I https://www.backupguardian.org
 
 # View logs if issues
 railway logs
@@ -186,7 +186,7 @@ vercel logs backupguardian
 
 ## ENVIRONMENT URLS
 
-- **Production Frontend:** https://backupguardian.vercel.app
+- **Production Frontend:** https://www.backupguardian.org
 - **Production Backend:** https://backupguardian-production.up.railway.app  
 - **Custom Domain:** https://backupguardian.org (when DNS configured)
 - **GitHub Repository:** https://github.com/pasika26/backupguardian

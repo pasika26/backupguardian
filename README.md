@@ -254,9 +254,9 @@ npm run dev:all   # Starts backend, frontend, and CLI in watch mode
 ## 📞 Support
 
 - 📖 [Documentation](docs/)
-- 🐛 [Issues](https://github.com/yourusername/backup-guardian/issues)
-- 💬 [Discussions](https://github.com/yourusername/backup-guardian/discussions)
-- 📧 Email: support@backup-guardian.com
+- 🐛 [Issues](https://github.com/pasika26/backupguardian/issues)
+- 💬 [Discussions](https://github.com/pasika26/backupguardian/discussions)
+- 📧 Email: hello@backupguardian.org
 
 ## 📄 License
 
