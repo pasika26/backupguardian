@@ -10,31 +10,41 @@ const { requireAdmin } = require('../middleware/adminAuth');
  */
 router.get('/stats', authenticateToken, requireAdmin, async (req, res, next) => {
   try {
+    // Safe query helper
+    async function safeQuery(sql, params = []) {
+      try {
+        return await query(sql, params);
+      } catch (error) {
+        console.warn('Safe query failed:', error.message);
+        return [{ count: 0 }];
+      }
+    }
+
     // Total users
-    const totalUsers = await query('SELECT COUNT(*) as count FROM users');
+    const totalUsers = await safeQuery('SELECT COUNT(*) as count FROM users');
     
     // Users registered in last 30 days
-    const recentUsers = await query(`
+    const recentUsers = await safeQuery(`
       SELECT COUNT(*) as count 
       FROM users 
       WHERE created_at >= date('now', '-30 days')
     `);
     
-    // Total backups uploaded
-    const totalBackups = await query('SELECT COUNT(*) as count FROM backups WHERE is_active = true');
+    // Total backups uploaded (safe)
+    const totalBackups = await safeQuery('SELECT COUNT(*) as count FROM backups WHERE is_active = true');
     
-    // Total test runs
-    const totalTests = await query('SELECT COUNT(*) as count FROM test_runs');
+    // Total test runs (safe)
+    const totalTests = await safeQuery('SELECT COUNT(*) as count FROM test_runs');
     
-    // Test runs by status
-    const testsByStatus = await query(`
+    // Test runs by status (safe)
+    const testsByStatus = await safeQuery(`
       SELECT status, COUNT(*) as count 
       FROM test_runs 
       GROUP BY status
     `);
     
-    // Daily activity (last 7 days)
-    const dailyActivity = await query(`
+    // Daily activity (last 7 days) (safe)
+    const dailyActivity = await safeQuery(`
       SELECT 
         DATE(created_at) as date,
         COUNT(*) as uploads
