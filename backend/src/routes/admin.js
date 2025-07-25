@@ -58,21 +58,21 @@ router.get('/stats', authenticateToken, requireAdmin, async (req, res, next) => 
       success: true,
       data: {
         users: {
-          total: parseInt(totalUsers.rows[0].count),
-          recent: parseInt(recentUsers.rows[0].count)
+          total: parseInt((totalUsers.rows || totalUsers)[0].count),
+          recent: parseInt((recentUsers.rows || recentUsers)[0].count)
         },
         backups: {
-          total: parseInt(totalBackups.rows[0].count)
+          total: parseInt((totalBackups.rows || totalBackups)[0].count)
         },
         tests: {
-          total: parseInt(totalTests.rows[0].count),
-          byStatus: testsByStatus.rows.reduce((acc, row) => {
+          total: parseInt((totalTests.rows || totalTests)[0].count),
+          byStatus: (testsByStatus.rows || testsByStatus).reduce((acc, row) => {
             acc[row.status] = parseInt(row.count);
             return acc;
           }, {})
         },
         activity: {
-          daily: dailyActivity.rows
+          daily: dailyActivity.rows || dailyActivity
         }
       }
     });
