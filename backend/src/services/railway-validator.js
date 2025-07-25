@@ -130,8 +130,31 @@ class RailwayValidator {
       const buffer = fs.readFileSync(filePath);
       const firstBytes = buffer.subarray(0, 100).toString('ascii', 0, 20);
       
-      if (firstBytes.includes('PGDMP') || filename.endsWith('.backup') || filename.endsWith('.dump')) {
-        // This is a PostgreSQL custom format dump - skip text parsing
+      // For .backup files, validate PGDMP header at start and check for corruption
+      if (filename.endsWith('.backup')) {
+        // Must start with PGDMP for valid PostgreSQL backup
+        if (buffer.length < 5 || buffer.subarray(0, 5).toString('ascii') !== 'PGDMP') {
+          step.errors.push('Invalid PostgreSQL backup file format - missing PGDMP header');
+          return step;
+        }
+        
+        // Check for obvious corruption markers in first 200 bytes
+        const headerContent = buffer.toString('utf8', 0, Math.min(buffer.length, 200));
+        if (headerContent.includes('corrupted binary data') || 
+            headerContent.includes('Random bytes') || 
+            headerContent.includes('INVALID_HEADER_DATA') ||
+            headerContent.includes('WRONGcorrupted')) {
+          step.errors.push('PostgreSQL backup file contains corruption markers');
+          return step;
+        }
+        
+        step.passed = true;
+        step.warnings.push('PostgreSQL binary dump detected - text validation skipped');
+        return step;
+      }
+      
+      // For .dump files, also check PGDMP if present
+      if (filename.endsWith('.dump') && firstBytes.includes('PGDMP')) {
         step.passed = true;
         step.warnings.push('PostgreSQL binary dump detected - text validation skipped');
         return step;

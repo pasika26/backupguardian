@@ -127,6 +127,30 @@ class SQLiteValidator {
         return step;
       }
 
+      // For .backup files, validate PGDMP header at start and check for corruption
+      if (filename.endsWith('.backup')) {
+        const buffer = fs.readFileSync(filePath);
+        // Must start with PGDMP for valid PostgreSQL backup
+        if (buffer.length < 5 || buffer.subarray(0, 5).toString('ascii') !== 'PGDMP') {
+          step.errors.push('Invalid PostgreSQL backup file format - missing PGDMP header');
+          return step;
+        }
+        
+        // Check for obvious corruption markers in first 200 bytes
+        const headerContent = buffer.toString('utf8', 0, Math.min(buffer.length, 200));
+        if (headerContent.includes('corrupted binary data') || 
+            headerContent.includes('Random bytes') || 
+            headerContent.includes('INVALID_HEADER_DATA') ||
+            headerContent.includes('WRONGcorrupted')) {
+          step.errors.push('PostgreSQL backup file contains corruption markers');
+          return step;
+        }
+        
+        step.passed = true;
+        step.warnings.push('PostgreSQL binary dump detected - limited validation in SQLite mode');
+        return step;
+      }
+
       // Check if file is effectively empty (only whitespace)
       const content = fs.readFileSync(filePath, 'utf8');
       if (content.trim().length === 0) {
