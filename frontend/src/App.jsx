@@ -64,7 +64,7 @@ function Navigation({ user, onLogout }) {
         </div>
 
         <div className="nav-user">
-          <span className="user-name">Hi, {user.name}</span>
+          <span className="user-name">Hi, {user.firstName}</span>
           <button className="logout-button" onClick={onLogout}>
             Logout
           </button>
