@@ -64,13 +64,11 @@ router.post('/cli', async (req, res) => {
 });
 
 // Admin analytics dashboard endpoint
-router.get('/summary', async (req, res) => {
+const { authenticateToken } = require('../middleware/auth');
+const { requireAdmin } = require('../middleware/adminAuth');
+
+router.get('/summary', authenticateToken, requireAdmin, async (req, res) => {
   try {
-    // Basic authentication check (add proper auth middleware in production)
-    const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.includes('admin-key')) {
-      return res.status(401).json({ error: 'Unauthorized' });
-    }
 
     // Get analytics summary
     const [
