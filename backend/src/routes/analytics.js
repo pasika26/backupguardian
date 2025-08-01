@@ -82,14 +82,14 @@ router.get('/summary', authenticateToken, requireAdmin, async (req, res) => {
       query(`
         SELECT COUNT(DISTINCT machine_id) as count 
         FROM cli_analytics 
-        WHERE timestamp >= datetime('now', '-30 days')
+        WHERE timestamp >= NOW() - INTERVAL '30 days'
       `),
       
       // Total commands
       query(`
         SELECT COUNT(*) as count 
         FROM cli_analytics 
-        WHERE timestamp >= datetime('now', '-30 days')
+        WHERE timestamp >= NOW() - INTERVAL '30 days'
       `),
       
       // Command breakdown
@@ -98,7 +98,7 @@ router.get('/summary', authenticateToken, requireAdmin, async (req, res) => {
                AVG(duration) as avg_duration,
                SUM(CASE WHEN success = 1 THEN 1 ELSE 0 END) as success_count
         FROM cli_analytics 
-        WHERE timestamp >= datetime('now', '-30 days')
+        WHERE timestamp >= NOW() - INTERVAL '30 days'
         GROUP BY event
         ORDER BY count DESC
       `),
@@ -107,7 +107,7 @@ router.get('/summary', authenticateToken, requireAdmin, async (req, res) => {
       query(`
         SELECT os, COUNT(DISTINCT machine_id) as unique_users
         FROM cli_analytics 
-        WHERE timestamp >= datetime('now', '-30 days')
+        WHERE timestamp >= NOW() - INTERVAL '30 days'
         GROUP BY os
         ORDER BY unique_users DESC
       `),
@@ -116,7 +116,7 @@ router.get('/summary', authenticateToken, requireAdmin, async (req, res) => {
       query(`
         SELECT date(timestamp) as day, COUNT(*) as commands
         FROM cli_analytics 
-        WHERE timestamp >= datetime('now', '-7 days')
+        WHERE timestamp >= NOW() - INTERVAL '7 days'
         GROUP BY date(timestamp)
         ORDER BY day DESC
       `)
