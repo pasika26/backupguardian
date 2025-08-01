@@ -37,7 +37,7 @@ router.post('/cli', async (req, res) => {
       INSERT INTO cli_analytics (
         event, machine_id, os, os_version, node_version, cli_version,
         timestamp, duration, success, file_type, error_message, options
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
     `, [
       analyticsData.event,
       analyticsData.machine_id,
