@@ -345,3 +345,132 @@
     width: 100%;
   }
 }
+
+/* CLI Analytics Styles */
+.admin-cli-analytics {
+  padding: 20px 0;
+}
+
+.admin-cli-analytics h3 {
+  color: #333;
+  margin-bottom: 30px;
+  font-size: 1.8em;
+}
+
+.cli-analytics-content {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.analytics-section {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.analytics-section h4 {
+  margin-bottom: 15px;
+  color: #333;
+  font-size: 1.2em;
+}
+
+.command-stats,
+.os-stats,
+.recent-activity {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.command-stat-item,
+.os-stat-item,
+.recent-activity-item {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  padding: 12px;
+  background: #f8f9fa;
+  border-radius: 6px;
+  gap: 15px;
+}
+
+.command-name,
+.os-name,
+.activity-command {
+  font-weight: 600;
+  color: #333;
+}
+
+.command-count,
+.os-count,
+.command-duration,
+.os-percentage {
+  color: #666;
+  font-size: 0.9em;
+}
+
+.activity-platform {
+  font-size: 1.2em;
+}
+
+.activity-time {
+  color: #666;
+  font-size: 0.9em;
+}
+
+.no-cli-data {
+  text-align: center;
+  padding: 40px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.no-cli-data p {
+  color: #666;
+  margin-bottom: 15px;
+  font-size: 1.1em;
+}
+
+.cli-instructions {
+  text-align: left;
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 6px;
+  margin-top: 20px;
+}
+
+.cli-instructions h4 {
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.cli-instructions ol {
+  color: #666;
+  line-height: 1.6;
+}
+
+.cli-instructions code {
+  background: #e9ecef;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: 'Courier New', monospace;
+  color: #333;
+}
+
+@media (max-width: 768px) {
+  .command-stat-item,
+  .os-stat-item,
+  .recent-activity-item {
+    grid-template-columns: 1fr;
+    gap: 5px;
+  }
+  
+  .analytics-section {
+    padding: 15px;
+  }
+}

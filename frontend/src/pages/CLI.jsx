@@ -75,23 +75,23 @@ function CLI() {
             <div className="command-group">
               <h3>Generate JSON Report</h3>
               <div className="code-block">
-                <code>backup-guardian validate backup.sql --format json --output report.json</code>
-                <button className="copy-btn" onClick={() => navigator.clipboard.writeText('backup-guardian validate backup.sql --format json --output report.json')}>
+                <code>backup-guardian validate backup.sql --json</code>
+                <button className="copy-btn" onClick={() => navigator.clipboard.writeText('backup-guardian validate backup.sql --json')}>
                   📋 Copy
                 </button>
               </div>
-              <p>Validates backup and saves detailed results as a JSON file for automation.</p>
+              <p>Validates backup and outputs detailed results in JSON format for automation.</p>
             </div>
 
             <div className="command-group">
-              <h3>Watch Directory</h3>
+              <h3>Detailed Schema Check</h3>
               <div className="code-block">
-                <code>backup-guardian watch /backup/directory --schedule daily</code>
-                <button className="copy-btn" onClick={() => navigator.clipboard.writeText('backup-guardian watch /backup/directory --schedule daily')}>
+                <code>backup-guardian validate backup.sql --schema-check --data-check</code>
+                <button className="copy-btn" onClick={() => navigator.clipboard.writeText('backup-guardian validate backup.sql --schema-check --data-check')}>
                   📋 Copy
                 </button>
               </div>
-              <p>Continuously monitors a directory for new backups and validates them automatically.</p>
+              <p>Validates backup with detailed schema analysis and data integrity checks.</p>
             </div>
           </div>
         </section>
@@ -117,7 +117,7 @@ jobs:
         
       - name: Validate Backup
         run: |
-          backup-guardian validate backup.sql
+          backup-guardian validate backup.sql --json
           if [ $? -ne 0 ]; then
             echo "Backup validation failed"
             exit 1
@@ -134,10 +134,11 @@ jobs:
   image: node:18
   script:
     - npm install -g backup-guardian
-    - backup-guardian validate backup.sql --format json
+    - backup-guardian validate backup.sql --json
   artifacts:
-    reports:
-      junit: validation-report.json`}</code>
+    when: always
+    paths:
+      - backup-validation.json`}</code>
                 <button className="copy-btn">📋 Copy</button>
               </div>
             </div>
@@ -168,32 +169,26 @@ jobs:
           <div className="commands-grid">
             <div className="command-card">
               <h4>validate</h4>
-              <p>Validate a PostgreSQL backup file</p>
+              <p>Validate a database backup file</p>
               <code>backup-guardian validate [file]</code>
             </div>
 
             <div className="command-card">
-              <h4>watch</h4>
-              <p>Monitor directory for new backups</p>
-              <code>backup-guardian watch [directory]</code>
+              <h4>version</h4>
+              <p>Display version information</p>
+              <code>backup-guardian version</code>
+            </div>
+
+            <div className="command-card">
+              <h4>demo</h4>
+              <p>Run a demo validation (no Docker required)</p>
+              <code>backup-guardian demo [file]</code>
             </div>
 
             <div className="command-card">
               <h4>config</h4>
-              <p>Configure CLI settings and API keys</p>
+              <p>Configure CLI settings</p>
               <code>backup-guardian config [options]</code>
-            </div>
-
-            <div className="command-card">
-              <h4>status</h4>
-              <p>Check validation job status</p>
-              <code>backup-guardian status [job-id]</code>
-            </div>
-
-            <div className="command-card">
-              <h4>report</h4>
-              <p>Download validation reports</p>
-              <code>backup-guardian report [job-id]</code>
             </div>
 
             <div className="command-card">
@@ -218,33 +213,28 @@ jobs:
               </thead>
               <tbody>
                 <tr>
-                  <td><code>--format</code></td>
-                  <td>Output format (text, json, pdf)</td>
-                  <td><code>--format json</code></td>
+                  <td><code>--json</code></td>
+                  <td>Output results in JSON format</td>
+                  <td><code>--json</code></td>
                 </tr>
                 <tr>
-                  <td><code>--output</code></td>
-                  <td>Output file path</td>
-                  <td><code>--output report.json</code></td>
+                  <td><code>--type</code></td>
+                  <td>Database type (postgresql, mysql)</td>
+                  <td><code>--type postgresql</code></td>
                 </tr>
                 <tr>
-                  <td><code>--schedule</code></td>
-                  <td>Watch schedule (hourly, daily, weekly)</td>
-                  <td><code>--schedule daily</code></td>
+                  <td><code>--schema-check</code></td>
+                  <td>Enable detailed schema validation</td>
+                  <td><code>--schema-check</code></td>
                 </tr>
                 <tr>
-                  <td><code>--timeout</code></td>
-                  <td>Validation timeout in minutes</td>
-                  <td><code>--timeout 30</code></td>
-                </tr>
-                <tr>
-                  <td><code>--api-key</code></td>
-                  <td>API authentication key</td>
-                  <td><code>--api-key your-key</code></td>
+                  <td><code>--data-check</code></td>
+                  <td>Enable data integrity checks</td>
+                  <td><code>--data-check</code></td>
                 </tr>
                 <tr>
                   <td><code>--verbose</code></td>
-                  <td>Detailed output</td>
+                  <td>Enable verbose output</td>
                   <td><code>--verbose</code></td>
                 </tr>
               </tbody>

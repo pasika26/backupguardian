@@ -168,7 +168,7 @@ function LandingPage() {
               <li>→ No vendor lock-in</li>
             </ul>
             <p className="open-source-note">
-              <a href="https://github.com/backup-guardian/backup-guardian" target="_blank" rel="noopener noreferrer">
+              <a href="https://github.com/pasika26/backupguardian" target="_blank" rel="noopener noreferrer">
                 ⭐ Star us on GitHub
               </a>
             </p>

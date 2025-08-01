@@ -6,6 +6,7 @@ const AdminDashboard = () => {
   const [stats, setStats] = useState(null);
   const [users, setUsers] = useState([]);
   const [activity, setActivity] = useState([]);
+  const [cliAnalytics, setCLIAnalytics] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
   const [userActions, setUserActions] = useState({});
@@ -20,10 +21,11 @@ const AdminDashboard = () => {
       const headers = { 'Authorization': `Bearer ${token}` };
       const baseUrl = import.meta.env.VITE_API_URL || 'https://backupguardian-production.up.railway.app';
 
-      const [statsRes, usersRes, activityRes] = await Promise.all([
+      const [statsRes, usersRes, activityRes, cliRes] = await Promise.all([
         fetch(`${baseUrl}/api/admin/stats`, { headers }),
         fetch(`${baseUrl}/api/admin/users`, { headers }),
-        fetch(`${baseUrl}/api/admin/activity`, { headers })
+        fetch(`${baseUrl}/api/admin/activity`, { headers }),
+        fetch(`${baseUrl}/api/analytics/summary`, { headers })
       ]);
 
       if (statsRes.ok && usersRes.ok && activityRes.ok) {
@@ -36,6 +38,12 @@ const AdminDashboard = () => {
         setStats(statsData.data);
         setUsers(usersData.data.users);
         setActivity(activityData.data.recentBackups);
+        
+        // Handle CLI analytics separately as it might fail
+        if (cliRes.ok) {
+          const cliData = await cliRes.json();
+          setCLIAnalytics(cliData);
+        }
       }
     } catch (error) {
       console.error('Failed to fetch admin data:', error);
@@ -146,6 +154,12 @@ const AdminDashboard = () => {
           onClick={() => setActiveTab('activity')}
         >
           Activity
+        </button>
+        <button 
+          className={`tab ${activeTab === 'cli-analytics' ? 'active' : ''}`}
+          onClick={() => setActiveTab('cli-analytics')}
+        >
+          CLI Analytics
         </button>
         <button 
           className={`tab ${activeTab === 'settings' ? 'active' : ''}`}
@@ -281,6 +295,117 @@ const AdminDashboard = () => {
               </div>
             ))}
           </div>
+        </div>
+      )}
+
+      {activeTab === 'cli-analytics' && (
+        <div className="admin-cli-analytics">
+          <h3>🖥️ CLI Usage Analytics</h3>
+          
+          {cliAnalytics ? (
+            <div className="cli-analytics-content">
+              <div className="stats-grid">
+                <div className="stat-card">
+                  <h4>👥 CLI Users (30 days)</h4>
+                  <div className="stat-number">{cliAnalytics.uniqueUsers}</div>
+                  <div className="stat-sub">Unique CLI installations</div>
+                </div>
+                
+                <div className="stat-card">
+                  <h4>⚡ Commands Run</h4>
+                  <div className="stat-number">{cliAnalytics.totalCommands}</div>
+                  <div className="stat-sub">Total commands executed</div>
+                </div>
+                
+                <div className="stat-card">
+                  <h4>📊 Avg Duration</h4>
+                  <div className="stat-number">
+                    {cliAnalytics.commandStats?.length > 0 
+                      ? `${Math.round(cliAnalytics.commandStats[0].avgDuration)}ms`
+                      : 'N/A'
+                    }
+                  </div>
+                  <div className="stat-sub">Average command time</div>
+                </div>
+                
+                <div className="stat-card">
+                  <h4>🔥 Top Command</h4>
+                  <div className="stat-number">
+                    {cliAnalytics.commandStats?.length > 0 
+                      ? cliAnalytics.commandStats[0].event 
+                      : 'N/A'
+                    }
+                  </div>
+                  <div className="stat-sub">Most used command</div>
+                </div>
+              </div>
+
+              <div className="analytics-section">
+                <h4>📈 Command Breakdown</h4>
+                <div className="command-stats">
+                  {cliAnalytics.commandStats?.map((cmd, index) => (
+                    <div key={index} className="command-stat-item">
+                      <div className="command-name">{cmd.event}</div>
+                      <div className="command-count">{cmd.count} times</div>
+                      <div className="command-duration">{Math.round(cmd.avgDuration)}ms avg</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="analytics-section">
+                <h4>💻 Operating Systems</h4>
+                <div className="os-stats">
+                  {cliAnalytics.osStats?.map((os, index) => (
+                    <div key={index} className="os-stat-item">
+                      <div className="os-name">
+                        {os.platform === 'darwin' ? '🍎 macOS' : 
+                         os.platform === 'linux' ? '🐧 Linux' : 
+                         os.platform === 'win32' ? '🪟 Windows' : 
+                         `📱 ${os.platform}`}
+                      </div>
+                      <div className="os-count">{os.count} users</div>
+                      <div className="os-percentage">
+                        {Math.round((os.count / cliAnalytics.uniqueUsers) * 100)}%
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="analytics-section">
+                <h4>🕒 Recent CLI Activity</h4>
+                <div className="recent-activity">
+                  {cliAnalytics.recentActivity?.slice(0, 10).map((activity, index) => (
+                    <div key={index} className="recent-activity-item">
+                      <div className="activity-command">{activity.event}</div>
+                      <div className="activity-platform">
+                        {activity.platform === 'darwin' ? '🍎' : 
+                         activity.platform === 'linux' ? '🐧' : 
+                         activity.platform === 'win32' ? '🪟' : '📱'}
+                      </div>
+                      <div className="activity-time">
+                        {formatDate(activity.timestamp)}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="no-cli-data">
+              <p>📊 No CLI analytics data available yet.</p>
+              <p>Data will appear here once users start using the CLI tool.</p>
+              <div className="cli-instructions">
+                <h4>How to test CLI analytics:</h4>
+                <ol>
+                  <li>Run: <code>backup-guardian validate test-file.sql</code></li>
+                  <li>Wait a few minutes for data to sync</li>
+                  <li>Refresh this page to see analytics</li>
+                </ol>
+              </div>
+            </div>
+          )}
         </div>
       )}
 

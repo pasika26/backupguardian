@@ -1,7 +1,7 @@
 .cli-page {
   min-height: 100vh;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  color: white !important;
   padding: 2rem 0;
 }
 
@@ -26,12 +26,12 @@
   font-size: 3rem;
   margin-bottom: 1rem;
   font-weight: 700;
-  color: white;
+  color: white !important;
 }
 
 .cli-header p {
   font-size: 1.2rem;
-  color: white;
+  color: white !important;
 }
 
 .installation-section,
@@ -49,7 +49,7 @@
 .options-section h2 {
   font-size: 2rem;
   margin-bottom: 2rem;
-  color: white;
+  color: white !important;
   text-align: center;
 }
 
@@ -76,7 +76,7 @@
 }
 
 .install-method h3 {
-  color: #2d3748;
+  color: #2d3748 !important;
   margin-bottom: 1rem;
   font-size: 1.3rem;
 }
@@ -158,13 +158,13 @@
 }
 
 .command-group h3 {
-  color: #2d3748;
+  color: #2d3748 !important;
   margin-bottom: 1rem;
   font-size: 1.3rem;
 }
 
 .command-group p {
-  color: #4a5568;
+  color: #4a5568 !important;
   margin-top: 1rem;
   line-height: 1.6;
 }
@@ -191,7 +191,7 @@
 }
 
 .integration-card h3 {
-  color: #2d3748;
+  color: #2d3748 !important;
   margin-bottom: 1rem;
   font-size: 1.3rem;
 }
@@ -218,13 +218,13 @@
 }
 
 .command-card h4 {
-  color: #2d3748;
+  color: #2d3748 !important;
   margin-bottom: 0.5rem;
   font-size: 1.2rem;
 }
 
 .command-card p {
-  color: #4a5568;
+  color: #4a5568 !important;
   margin-bottom: 1rem;
   font-size: 0.9rem;
 }
@@ -263,7 +263,7 @@
 .options-table td {
   padding: 1rem;
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  color: #4a5568;
+  color: #4a5568 !important;
 }
 
 .options-table tr:last-child td {
@@ -292,12 +292,13 @@
   font-size: 2rem;
   margin-bottom: 1rem;
   font-weight: 700;
+  color: white !important;
 }
 
 .cli-cta p {
   font-size: 1.1rem;
   margin-bottom: 2rem;
-  color: white;
+  color: white !important;
 }
 
 .cta-buttons {
