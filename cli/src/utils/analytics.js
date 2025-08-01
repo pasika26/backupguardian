@@ -9,7 +9,7 @@ class Analytics {
   constructor() {
     this.configDir = path.join(os.homedir(), '.backup-guardian');
     this.configFile = path.join(this.configDir, 'config.json');
-    this.apiEndpoint = process.env.ANALYTICS_ENDPOINT || 'https://api.backup-guardian.com/api/analytics/cli';
+    this.apiEndpoint = process.env.ANALYTICS_ENDPOINT || 'https://backupguardian-production.up.railway.app/api/analytics/cli';
     this.enabled = true;
     this.machineId = null;
     
