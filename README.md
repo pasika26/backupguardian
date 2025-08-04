@@ -1,33 +1,40 @@
 # 🛡️ BackupGuardian
+Validate database backup files before migration to prevent costly failures
 
-**Validate database backup files before migration to prevent costly failures**
+BackupGuardian is a comprehensive tool for validating database backup files through deep structural analysis and integrity checking. Get confidence in your migrations before they matter.
 
-BackupGuardian is a comprehensive tool for testing database backup files by actually restoring them in isolated Docker containers. Get confidence in your migrations before they matter.
+## 🌐 Live Demo
+- **Web App**: https://www.backupguardian.org
+- **GitHub**: https://github.com/pasika26/backupguardian
+- **CLI**: `npm install -g backup-guardian`
 
 ## ✨ Features
-
-- **🐳 Real Validation** - Actually restores backups in Docker containers
-- **🔍 Multi-Database Support** - PostgreSQL, MySQL (MongoDB coming soon)
-- **📊 Detailed Reports** - Schema analysis, data integrity checks, migration scores
-- **⚡ Multiple Interfaces** - Web app, CLI tool, API
-- **🚀 CI/CD Ready** - Integrate into your deployment pipeline
-- **📈 Team Collaboration** - Share validation history and results
+🔍 **Smart Validation** - Deep structural analysis and integrity checking
+📊 **Multi-Database Support** - PostgreSQL, MySQL, SQLite
+📋 **Detailed Reports** - Schema analysis, data integrity checks, migration scores
+⚡ **Multiple Interfaces** - Web app, CLI tool, API
+🚀 **CI/CD Ready** - Integrate into your deployment pipeline
+📈 **Team Collaboration** - Share validation history and results
+🌐 **Self-Hosted** - Deploy on your own infrastructure
+⭐ **Open Source** - No vendor lock-in
 
 ## 🚀 Quick Start
 
 ### CLI Tool (Fastest)
 ```bash
 # Install globally
-npm install -g backup-guardian-cli
+npm install -g backup-guardian
 
 # Validate a backup file
 backup-guardian validate backup.sql
 
-# With detailed checks
-backup-guardian validate --schema-check --data-check backup.sql
+# Get detailed help
+backup-guardian --help
 ```
 
 ### Web Application
+Try the live demo at **https://www.backupguardian.org** or run locally:
+
 ```bash
 # Backend
 cd backend
@@ -39,11 +46,9 @@ cd frontend
 npm install
 npm run dev
 ```
-
 Visit http://localhost:5173 for the web interface.
 
 ## 📁 Project Structure
-
 ```
 backup-guardian/
 ├── backend/           # Node.js + Express API
@@ -55,17 +60,17 @@ backup-guardian/
 
 ## 🧪 What Gets Validated
 
-### ✅ Restore Success
+### ✅ File & Structure Validation
 - File format validation (.sql, .dump, .backup)
-- Database engine compatibility 
-- Syntax error detection
-- Restore command execution
+- Database engine compatibility
+- SQL syntax error detection
+- Encoding validation
 
 ### ✅ Schema Analysis
 - Table structure validation
 - Index and constraint verification
 - Foreign key relationship checks
-- Schema comparison (before/after)
+- Transaction integrity analysis
 
 ### ✅ Data Integrity
 - Row count verification
@@ -73,11 +78,15 @@ backup-guardian/
 - Large table identification
 - Empty table detection
 
+## 🌐 Production Deployment
+- **Web App**: https://www.backupguardian.org
+- **Backend API**: https://backupguardian-production.up.railway.app
+- **CLI Package**: `npm install -g backup-guardian`
+
 ## 🛠️ Installation & Setup
 
 ### Prerequisites
 - Node.js 16+
-- Docker (for validation testing)
 - PostgreSQL/MySQL (for app database)
 
 ### Backend Setup
@@ -107,16 +116,12 @@ npm link  # For local development
 ## 🔧 Configuration
 
 ### Environment Variables
-```bash
+```env
 # Backend (.env)
 PORT=3000
 DATABASE_URL=postgresql://user:pass@localhost:5432/backup_guardian
 JWT_SECRET=your-super-secret-jwt-key
 NODE_ENV=development
-
-# Docker Configuration
-POSTGRES_TEST_BASE_PORT=5500
-MYSQL_TEST_BASE_PORT=3400
 ```
 
 ## 📖 API Documentation
@@ -152,7 +157,6 @@ Authorization: Bearer <token>
 ```
 
 ## 🧪 Testing
-
 ```bash
 # Backend tests
 cd backend
@@ -170,23 +174,7 @@ cd cli
 npm test
 ```
 
-## 🐳 Docker Usage
-
-### Manual Validation
-```bash
-# The system automatically manages Docker containers
-# Containers are created, used for validation, then cleaned up
-# No manual Docker commands needed!
-```
-
-### Container Management
-- Automatic PostgreSQL/MySQL container creation
-- Isolated testing environments
-- Automatic cleanup after validation
-- Port management for concurrent tests
-
 ## 📊 Example Results
-
 ```json
 {
   "success": true,
@@ -213,19 +201,16 @@ npm test
 
 ## 🚀 Deployment
 
-See [PRODUCTION_CHECKLIST.md](PRODUCTION_CHECKLIST.md) for complete production deployment guide.
+See [DEPLOYMENT_INSTRUCTIONS.md](DEPLOYMENT_INSTRUCTIONS.md) for complete production deployment guide.
 
 ### Quick Deploy
 ```bash
-# Backend (using PM2)
-cd backend
-npm run build
-pm2 start ecosystem.config.js
+# Backend (Railway)
+git push origin main  # Auto-deploys to Railway
 
-# Frontend (static hosting)
+# Frontend (Vercel)
 cd frontend
-npm run build
-# Deploy dist/ folder to your hosting provider
+vercel --prod
 ```
 
 ## 🤝 Contributing
@@ -245,7 +230,7 @@ npm run dev:all   # Starts backend, frontend, and CLI in watch mode
 ## 📋 Roadmap
 
 - [ ] MongoDB backup support
-- [ ] Scheduled validation jobs
+- [ ] Scheduled validation jobs  
 - [ ] Slack/Discord integrations
 - [ ] Advanced reporting dashboard
 - [ ] Enterprise SSO support
@@ -253,7 +238,7 @@ npm run dev:all   # Starts backend, frontend, and CLI in watch mode
 
 ## 📞 Support
 
-- 📖 [Documentation](docs/)
+- 📖 [Documentation](https://www.backupguardian.org)
 - 🐛 [Issues](https://github.com/pasika26/backupguardian/issues)
 - 💬 [Discussions](https://github.com/pasika26/backupguardian/discussions)
 - 📧 Email: hello@backupguardian.org
@@ -266,8 +251,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 > "We caught a critical schema issue in our backup before our production migration. BackupGuardian saved us from hours of downtime and data recovery." - DevOps Engineer
 
-**Built by developers, for developers who value reliable migrations.**
+Built by developers, for developers who value reliable migrations.
 
----
-
-**⭐ Star this repo if BackupGuardian helps you catch backup issues before they become disasters!**
+⭐ **Star this repo** if BackupGuardian helps you catch backup issues before they become disasters!
